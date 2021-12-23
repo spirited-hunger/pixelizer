@@ -1,4 +1,4 @@
-# pixelizer (Working Title)
+# Pixelizer (Working Title)
 
 a website to pixelize images
 
