@@ -1,0 +1,22 @@
+{
+  "name": "pixelizer",
+  "version": "1.0.0",
+  "description": "[English](README.md), [한국어](README.ko.md)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spirited-hunger/pixelizer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/spirited-hunger/pixelizer/issues"
+  },
+  "homepage": "https://github.com/spirited-hunger/pixelizer#readme",
+  "dependencies": {
+    "typescript": "^4.5.4"
+  }
+}
