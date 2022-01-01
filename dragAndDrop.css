@@ -24,6 +24,10 @@ body {
   flex-direction: column;
 }
 
+.drag-area.active {
+  border: 2px solid #fff;
+}
+
 .drag-area .icon {
   font-size: 100px;
   color: #fff;
@@ -52,4 +56,11 @@ body {
   color: #5256ad;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.drag-area img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 5px;
 }
