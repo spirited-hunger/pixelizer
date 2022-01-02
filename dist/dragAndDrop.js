@@ -1,7 +1,19 @@
 // selecting all required elements
 var dropArea = document.querySelector(".drag-area");
 var dragText = dropArea.querySelector("h1");
+var button = dropArea.querySelector("button");
+var input = dropArea.querySelector("input");
 var file;
+button.onclick = function () {
+    input.click(); // if button is clicked the input is also clicked
+};
+input.addEventListener("change", function () {
+    // getting user select file and [0] means if a user selets multiple files we'll select only the first one
+    file = input.files[0];
+    // ! if use this.files[0], "this" points to window...?
+    showFile();
+    dropArea.classList.add("active");
+});
 // if user drag file over drag area
 dropArea.addEventListener("dragover", function (event) {
     event.preventDefault(); // preventing from default behaviour
@@ -21,8 +33,11 @@ dropArea.addEventListener("drop", function (event) {
     // console.log("File is dropped on drop area");
     // getting user select file and [0] means if a user selets multiple files we'll select only the first one
     file = event.dataTransfer.files[0];
-    var fileType = file.type;
     // console.log(file);
+    showFile();
+});
+var showFile = function () {
+    var fileType = file.type;
     var validExtentsions = ["image/jpeg", "image/jpg", "image/png"];
     if (validExtentsions.includes(fileType)) {
         var fileReader_1 = new FileReader();
@@ -36,6 +51,7 @@ dropArea.addEventListener("drop", function (event) {
     }
     else {
         alert("This is not a valid image file");
+        dragText.textContent = "Drag & Drop to Upload File";
     }
-});
+};
 //# sourceMappingURL=dragAndDrop.js.map
