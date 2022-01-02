@@ -1,8 +1,23 @@
 // selecting all required elements
 const dropArea = document.querySelector(".drag-area");
-const dragText = dropArea.querySelector("h1")
+const dragText = dropArea.querySelector("h1");
+const button = dropArea.querySelector("button");
+const input = dropArea.querySelector("input");
 
 let file : any;
+
+button.onclick = () => {
+  input.click(); // if button is clicked the input is also clicked
+}
+
+input.addEventListener("change", () => {
+  // getting user select file and [0] means if a user selets multiple files we'll select only the first one
+  file = input.files[0];
+  // ! if use this.files[0], "this" points to window...?
+  showFile();
+
+  dropArea.classList.add("active");
+})
 
 // if user drag file over drag area
 dropArea.addEventListener("dragover", (event : any) : void => {
@@ -26,9 +41,12 @@ dropArea.addEventListener("drop", (event : any) : void => {
 
   // getting user select file and [0] means if a user selets multiple files we'll select only the first one
   file = event.dataTransfer.files[0];
-  let fileType = file.type;
   // console.log(file);
+  showFile();
+})
 
+const showFile = () => {
+  let fileType = file.type;
   let validExtentsions: Array<string> = ["image/jpeg", "image/jpg", "image/png"];
 
   if (validExtentsions.includes(fileType)) {
@@ -41,7 +59,8 @@ dropArea.addEventListener("drop", (event : any) : void => {
     }
     fileReader.readAsDataURL(file);
   } else {
-    alert("This is not a valid image file")
+    alert("This is not a valid image file");
+    dragText.textContent = "Drag & Drop to Upload File";
   }
+}
 
-})
