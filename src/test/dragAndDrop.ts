@@ -53,7 +53,7 @@ const showFile = () => {
     let fileReader = new FileReader();
     fileReader.onload = () => {
       let fileURL = fileReader.result;
-      console.log(fileURL); // base64
+      // console.log(fileURL); // base64
       let imgTag = `<img src="${fileURL}" alt="">`;
       dropArea.innerHTML = imgTag;
     }
