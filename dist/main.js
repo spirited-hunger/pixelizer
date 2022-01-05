@@ -22,6 +22,6 @@ var App = /** @class */ (function () {
 }());
 window.onload = function () {
     new App();
-    console.log(devicePixelRatio);
+    // console.log(devicePixelRatio)
 };
 //# sourceMappingURL=main.js.map
