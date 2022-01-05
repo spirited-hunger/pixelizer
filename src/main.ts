@@ -1,8 +1,22 @@
 class App {
   canvas: any;
   ctx: any;
-  pixelRatio: any;
-  resize: any;
+  pixelRatio: number;
+  stageWidth: number;
+  stageHeight: number;
+
+  resize() {
+    this.stageWidth = document.body.clientWidth;
+    this.stageHeight = document.body.clientWidth;
+
+    this.canvas.width = this.stageWidth * this.pixelRatio;
+    this.canvas.height = this.stageHeight * this.pixelRatio;
+  };
+
+  animate() {
+
+  };
+
   constructor() {
     this.canvas = document.createElement('canvas');
     document.body.appendChild(this.canvas);
@@ -12,7 +26,9 @@ class App {
 
     window.addEventListener('resize', this.resize.bind(this), false);
 
-    console.log(this)
+    this.resize();
+
+    window.requestAnimationFrame(this.animate.bind(this));
   }
 }
 
