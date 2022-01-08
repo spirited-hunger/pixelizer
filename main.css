@@ -1,0 +1,51 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background: rgba(188, 195, 205, 1);
+  ;
+}
+
+h1 {
+  font-family: Saira;
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 101px;
+  letter-spacing: 0em;
+  text-align: center;
+
+  position: fixed;
+  top: 8%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+
+#description {
+  font-family: Sansation Light;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 10px;
+  letter-spacing: 0em;
+  text-align: center;
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 50px;
+}
+/* 
+#mainCanvas {
+  border: 2px solid white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+} */
