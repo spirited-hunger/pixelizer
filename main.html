@@ -6,12 +6,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pixelizer</title>
   <link rel="stylesheet" href="main.css">
+  <script src="https://kit.fontawesome.com/0c51a49afe.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <h1>Pixelizer<h1>
-    
-  <div id="description">quick and easy pixel art generator</div>
+  <div class="title-area">
+    <h1>Pixelizer</h1>
+    <div id="description">a quick and easy pixel art generator</div>
+  </div>
 
-  <script src="dist/main.js"></script>
+  <div class="drag-area">
+    <div class="icon">
+      <i class="fas fa-cloud-upload-alt"></i>
+    </div>
+    <h2>Drag & Drop to Upload File</h2>
+    <span>OR</span>
+    <button class="browseButton">Browse Files</button>
+    <input type="file" hidden>
+  </div>
+
+  <div class="button-area">
+    <button class="pixelateButton">PIXELATE IMAGE</button>
+  </div>
+  <script type="module" src="./dist/main.js"></script>
 </body>
 </html>
