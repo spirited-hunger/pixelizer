@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
-    "module": "es6",
+    "module": "es2015",
     "lib": ["es6", "dom", "es2017"],
-    "target": "es5",
+    "target": "es2017",
+    "removeComments": true,
     "sourceMap": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "allowJs": true
   },
   "compileOnSave": true,
   "include": ["src/**/*"],
