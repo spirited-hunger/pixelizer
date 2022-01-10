@@ -7,6 +7,9 @@ let file;
 browseButton.onclick = () => {
     input.click();
 };
+pixelateButton.onclick = () => {
+    file;
+};
 input.addEventListener("change", (e) => {
     const input = e.target;
     file = input.files[0];

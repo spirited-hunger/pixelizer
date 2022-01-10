@@ -43,7 +43,7 @@ h1 {
 
   background: rgba(188, 195, 205, 1);
   position: absolute;
-  top: 9.7%;
+  top: 10%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -100,7 +100,6 @@ h1 {
   height: 100%;
   width: 100%;
   object-fit: cover;
-  border-radius: 5px;
 }
 
 .button-area {
