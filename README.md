@@ -1,7 +1,7 @@
-# Pixelizer (Working Title)
+# Pixpix
 [English](README.md), [한국어](README.ko.md)
 
-a website to pixelize images
+a website to pixelate images
 
 started : 2021. 12. 24
 
