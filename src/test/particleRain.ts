@@ -2,7 +2,8 @@ import { isFunctionExpression } from "../../node_modules/typescript/lib/typescri
 import {astronautImage} from "./images.js";
 
 const myImage = new Image();
-myImage.src = astronautImage.base64;
+myImage.src = "https://picsum.photos/200";
+myImage.setAttribute('crossOrigin', '');
 
 myImage.addEventListener('load', () => { // after all, base64 is a url request. sometimes it responds slower than js file. so it fails to upload the image all the time. this is why we add eventlistener
   const canvas: any = document.getElementById("myCanvas");
@@ -29,7 +30,26 @@ myImage.addEventListener('load', () => { // after all, base64 is a url request. 
       const green = pixels.data[(y * 4 * pixels.width) + (x * 4) + 1];
       const blue = pixels.data[(y * 4 * pixels.width) + (x * 4) + 2];
       const alpha = pixels.data[(y * 4 * pixels.width) + (x * 4) + 3];
+
+      const brightness = calculateRelativeBrightness(red, green, blue);
+
+      row.push(brightness);
     }
+    mappedImage.push(row);
+  }
+
+  /* 
+  Human eyes do not percieve red green and blue the same.
+  need different amount of brightness for red green blue respectively 
+  
+  This utility function will adjust each values of rgb to a visually accurate brightness value for human perception
+  */
+  function calculateRelativeBrightness(red: number, green: number, blue: number) : number {
+    return Math.sqrt(
+      (red * red) * 0.299 +
+      (green * green) * 0.587 +
+      (blue * blue) * 0.114
+    )/100;
   }
 
   class Particle {
@@ -43,12 +63,17 @@ myImage.addEventListener('load', () => { // after all, base64 is a url request. 
           this.x = Math.random() * canvas.width;
           this.y = 0;
           this.speed = 0;
-          this.velocity = Math.random() * 3.5;
+          this.velocity = Math.random() * 0.5;
           this.size = Math.random() * 1.5 + 1;
       }
 
       update() {
-        this.y += this.velocity;
+        this.speed = mappedImage[Math.floor(this.y)][Math.floor(this.x)];
+
+        // faster they move, more transparent the particles are
+        let movement = (2.5 - this.speed) + this.velocity;
+        this.y += movement;
+        
         if (this.y >= canvas.height) {
           this.y = 0;
           this.x = Math.random() * canvas.width;
@@ -70,12 +95,15 @@ myImage.addEventListener('load', () => { // after all, base64 is a url request. 
   init();
 
   function animate () {
-    ctx.drawImage(myImage, 0, 0, canvas.width, canvas.height);
+    // ctx.drawImage(myImage, 0, 0, canvas.width, canvas.height);
     ctx.globalAlpha = 0.05;
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < particlesArray.length; i++) {
       particlesArray[i].update();
+
+      // ctx.globalAlpha = particlesArray[i].speed * 0.5;
+
       particlesArray[i].draw();
     }
     requestAnimationFrame(animate);
