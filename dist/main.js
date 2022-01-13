@@ -1,3 +1,5 @@
+const CANVAS_WIDTH = 1080;
+const CANVAS_HEIGHT = 1080;
 const dropArea = document.querySelector(".drag-area");
 const dragText = dropArea.querySelector("#drag-and-drop-msg");
 const browseButton = dropArea.querySelector(".browseButton");
@@ -39,9 +41,32 @@ const showFile = () => {
         let fileReader = new FileReader();
         fileReader.readAsDataURL(file);
         fileReader.onload = () => {
-            let fileURL = fileReader.result;
-            let imgTag = `<img src="${fileURL}" alt="">`;
-            dropArea.innerHTML = imgTag;
+            const originalImage = new Image();
+            let imageURL = `${fileReader.result}`;
+            originalImage.src = imageURL;
+            originalImage.addEventListener('load', () => {
+                const originalCanvas = document.createElement('canvas');
+                imgArea.appendChild(originalCanvas);
+                originalCanvas.width = CANVAS_WIDTH;
+                originalCanvas.height = CANVAS_HEIGHT;
+                const originalContext = originalCanvas.getContext('2d');
+                let imageWidth = originalImage.width;
+                let imageHeight = originalImage.height;
+                const whRatio = imageWidth / imageHeight;
+                if (whRatio >= 1) {
+                    imageWidth = CANVAS_WIDTH;
+                    imageHeight = imageWidth / whRatio;
+                }
+                else {
+                    imageHeight = CANVAS_HEIGHT;
+                    imageWidth = imageHeight * whRatio;
+                }
+                let x = (CANVAS_WIDTH / 2) - (imageWidth / 2);
+                let y = (CANVAS_HEIGHT / 2) - (imageHeight / 2);
+                let w = imageWidth;
+                let h = imageHeight;
+                originalContext.drawImage(originalImage, x, y, w, h);
+            });
         };
     }
     else {
