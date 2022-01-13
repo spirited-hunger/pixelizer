@@ -63,8 +63,8 @@ myImage.addEventListener('load', () => { // after all, base64 is a url request. 
           this.x = Math.random() * canvas.width;
           this.y = 0;
           this.speed = 0;
-          this.velocity = Math.random() * 0.5;
-          this.size = Math.random() * 1.5 + 1;
+          this.velocity = Math.random() * 2.5;
+          this.size = Math.random() * 0.5 + 1;
       }
 
       update() {
@@ -102,7 +102,7 @@ myImage.addEventListener('load', () => { // after all, base64 is a url request. 
     for (let i = 0; i < particlesArray.length; i++) {
       particlesArray[i].update();
 
-      // ctx.globalAlpha = particlesArray[i].speed * 0.5;
+      ctx.globalAlpha = particlesArray[i].speed * 0.1;
 
       particlesArray[i].draw();
     }
