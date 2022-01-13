@@ -1,8 +1,9 @@
 const dropArea = document.querySelector(".drag-area");
-const dragText = dropArea.querySelector("h2");
+const dragText = dropArea.querySelector("#drag-and-drop-msg");
 const browseButton = dropArea.querySelector(".browseButton");
 const pixelateButton = document.querySelector(".pixelateButton");
 const input = dropArea.querySelector("input");
+const imgArea = document.querySelector(".image-area");
 let file;
 browseButton.onclick = () => {
     input.click();
@@ -36,12 +37,12 @@ const showFile = () => {
     let validExtentsions = ["image/jpeg", "image/jpg", "image/png"];
     if (validExtentsions.includes(fileType)) {
         let fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
         fileReader.onload = () => {
             let fileURL = fileReader.result;
             let imgTag = `<img src="${fileURL}" alt="">`;
             dropArea.innerHTML = imgTag;
         };
-        fileReader.readAsDataURL(file);
     }
     else {
         alert("This is not a valid image file");

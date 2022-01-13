@@ -33,8 +33,8 @@ myImage.addEventListener('load', () => {
             this.x = Math.random() * canvas.width;
             this.y = 0;
             this.speed = 0;
-            this.velocity = Math.random() * 0.5;
-            this.size = Math.random() * 1.5 + 1;
+            this.velocity = Math.random() * 2.5;
+            this.size = Math.random() * 0.5 + 1;
         }
         update() {
             this.speed = mappedImage[Math.floor(this.y)][Math.floor(this.x)];
@@ -64,6 +64,7 @@ myImage.addEventListener('load', () => {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         for (let i = 0; i < particlesArray.length; i++) {
             particlesArray[i].update();
+            ctx.globalAlpha = particlesArray[i].speed * 0.1;
             particlesArray[i].draw();
         }
         requestAnimationFrame(animate);

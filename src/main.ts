@@ -39,11 +39,13 @@
 
 // selecting all required elements
 const dropArea: HTMLElement = document.querySelector(".drag-area");
-const dragText: HTMLElement = dropArea.querySelector("h2");
+const dragText: HTMLElement = dropArea.querySelector("#drag-and-drop-msg");
 const browseButton: HTMLButtonElement = dropArea.querySelector(".browseButton");
 
 const pixelateButton: HTMLButtonElement = document.querySelector(".pixelateButton");
 const input: HTMLInputElement = dropArea.querySelector("input");
+
+const imgArea: HTMLElement = document.querySelector(".image-area")
 
 
 let file : any;
@@ -61,7 +63,7 @@ input.addEventListener("change", (e:Event) : void => {
 
   // getting user select file and [0] means if a user selets multiple files we'll select only the first one
   file = input.files[0];
-  // ! if use this.files[0], "this" points to window...?
+  // ! if use this.files[0], "this" points to window because it is an arrow function
   showFile();
 
   dropArea.classList.add("active");
@@ -101,13 +103,15 @@ const showFile = () => {
 
   if (validExtentsions.includes(fileType)) {
     let fileReader = new FileReader();
+    
+    fileReader.readAsDataURL(file);
+    
     fileReader.onload = () => {
       let fileURL = fileReader.result;
       // console.log(fileURL); // base64
       let imgTag = `<img src="${fileURL}" alt="">`;
       dropArea.innerHTML = imgTag;
     }
-    fileReader.readAsDataURL(file);
   } else {
     alert("This is not a valid image file");
     dragText.textContent = "Drag & Drop to Upload File";
