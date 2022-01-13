@@ -37,14 +37,23 @@
 //   // console.log(devicePixelRatio)
 // }
 
-// selecting all required elements
-const dropArea: HTMLElement = document.querySelector(".drag-area");
-const dragText: HTMLElement = dropArea.querySelector("h2");
-const browseButton: HTMLButtonElement = dropArea.querySelector(".browseButton");
+/* important values */
+const CANVAS_WIDTH : number = 1080;
+const CANVAS_HEIGHT : number = 1080;
 
+/* selecting all required elements */
+
+/* drop area */
+const dropArea: HTMLElement = document.querySelector(".drag-area");
+const dragText: HTMLElement = dropArea.querySelector("#drag-and-drop-msg");
+
+/* button area */
+const browseButton: HTMLButtonElement = dropArea.querySelector(".browseButton");
 const pixelateButton: HTMLButtonElement = document.querySelector(".pixelateButton");
 const input: HTMLInputElement = dropArea.querySelector("input");
 
+/* image area */
+const imgArea: HTMLElement = document.querySelector(".image-area");
 
 let file : any;
 
@@ -61,7 +70,7 @@ input.addEventListener("change", (e:Event) : void => {
 
   // getting user select file and [0] means if a user selets multiple files we'll select only the first one
   file = input.files[0];
-  // ! if use this.files[0], "this" points to window...?
+  // ! if use this.files[0], "this" points to window because it is an arrow function
   showFile();
 
   dropArea.classList.add("active");
@@ -100,14 +109,52 @@ const showFile = () => {
   let validExtentsions: Array<string> = ["image/jpeg", "image/jpg", "image/png"];
 
   if (validExtentsions.includes(fileType)) {
-    let fileReader = new FileReader();
-    fileReader.onload = () => {
-      let fileURL = fileReader.result;
-      // console.log(fileURL); // base64
-      let imgTag = `<img src="${fileURL}" alt="">`;
-      dropArea.innerHTML = imgTag;
-    }
+    let fileReader: FileReader = new FileReader();
+    
     fileReader.readAsDataURL(file);
+    
+    fileReader.onload = () => {
+      const originalImage = new Image();
+      
+      let imageURL: string = `${fileReader.result}`;
+      // console.log(imageURL); // this is a base64 format
+      originalImage.src = imageURL;
+
+      originalImage.addEventListener('load', () => {
+        const originalCanvas: HTMLCanvasElement = document.createElement('canvas');
+
+        imgArea.appendChild(originalCanvas);
+        
+        originalCanvas.width = CANVAS_WIDTH;
+        originalCanvas.height = CANVAS_HEIGHT;
+        
+        const originalContext: any = originalCanvas.getContext('2d');
+
+        /* adjusting image size to the frame size */
+        let imageWidth: number = originalImage.width;
+        let imageHeight: number = originalImage.height;
+
+        const whRatio: number = imageWidth / imageHeight;
+
+        if (whRatio >= 1) {
+          /* width is bigger */
+          imageWidth = CANVAS_WIDTH;
+          imageHeight = imageWidth / whRatio;
+        } else {
+          /* height is bigger */
+          imageHeight = CANVAS_HEIGHT;
+          imageWidth = imageHeight * whRatio;
+        }
+
+        /* centering the image on canvas */
+        let x: number = (CANVAS_WIDTH / 2) - (imageWidth / 2);
+        let y: number = (CANVAS_HEIGHT / 2) - (imageHeight / 2);
+        let w: number = imageWidth;
+        let h: number = imageHeight;
+        
+        originalContext.drawImage(originalImage, x, y, w, h);
+      });
+    }
   } else {
     alert("This is not a valid image file");
     dragText.textContent = "Drag & Drop to Upload File";
