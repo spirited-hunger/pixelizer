@@ -12,16 +12,12 @@ body {
   justify-content: center;
 
   min-height: 100vh;
-  background: rgb(255, 255, 255);
-
-  border: 1px solid rgb(0, 0, 0);
-  font-family: Helvetica, Arial, sans-serif;
 }
 
 body * {
   border: 1px solid rgb(0, 0, 0);
 
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   
   /* 최소한의 margin */
   margin: 5px;
@@ -38,6 +34,7 @@ body * {
   text-align: center;
 
   /* position */
+  z-index: 50;
   position: absolute;
   top: 8%;
   left: 50%;
@@ -61,8 +58,18 @@ body * {
   justify-content: center;
   flex-direction: column;
 
+  /* size */
+  margin: 0;
+  flex: 1;
+  width: 100vw;
+
   /* position */
-  z-index: 1000;
+  z-index: 100;
+}
+
+.drag-area.hidden {
+  /* hiding */
+  display: none;
 }
 
 .drag-area .icon {
@@ -84,12 +91,6 @@ body * {
   cursor: pointer;
 }
 
-.drag-area img {
-  height: 100%;
-  width: 100%;
-  object-fit: contain;
-}
-
 /* button area */
 
 .button-area {
@@ -99,6 +100,7 @@ body * {
   flex-direction: column;
 
   /* position */
+  z-index: 50;
   position: absolute;
   top: 92%;
   left: 50%;
@@ -108,12 +110,7 @@ body * {
 .button-area button {
   font-size: 14px;
   outline: none;
-  background: rgb(214, 214, 214);
   cursor: pointer;
-}
-
-.pixelateButton.active {
-  background: rgb(204, 255, 215);
 }
 
 /* image area */
@@ -126,10 +123,11 @@ body * {
   flex-direction: column;
 
   /* size */
-  height: 600px;
-  width: 600px;
+  height: 800px;
+  width: 800px;
 
   /* position */
+  z-index: 90;
   position: absolute;
   top: 50%;
   left: 50%;
