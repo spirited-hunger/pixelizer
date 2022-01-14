@@ -38,8 +38,15 @@
 // }
 
 /* important values */
-const CANVAS_WIDTH : number = 1080;
-const CANVAS_HEIGHT : number = 1080;
+const CANVAS_MAX_WIDTH : number = 1080;
+const CANVAS_MAX_HEIGHT : number = 1080;
+
+const PIXEL_SIZE : number = 10;
+
+let imageWidth: number;
+let imageHeight: number;
+
+let imagePalette = "linear-gradient(180deg, #E3E3E3 0%, #BCC3CD 100%)";
 
 /* selecting all required elements */
 
@@ -55,6 +62,14 @@ const input: HTMLInputElement = dropArea.querySelector("input");
 /* image area */
 const imgArea: HTMLElement = document.querySelector(".image-area");
 
+const originalImage = new Image();
+
+const imgCanvas: HTMLCanvasElement = document.createElement('canvas');
+const imgContext: any = imgCanvas.getContext('2d');
+
+const pixCanvas: HTMLCanvasElement = document.createElement('canvas');
+const pixContext: any = pixCanvas.getContext('2d');
+
 let file : any;
 
 browseButton.onclick = () => {
@@ -62,7 +77,51 @@ browseButton.onclick = () => {
 }
 
 pixelateButton.onclick = () => {
-  file
+  if (imageWidth !== undefined && imageHeight !== undefined) { // double-check if image is uploaded
+    console.log("pix!");
+
+    const pixelSize: number = PIXEL_SIZE;
+    const pixelNumCol: number = Math.floor(imageWidth / pixelSize);
+    const pixelNumRow: number = Math.floor(imageHeight / pixelSize);
+    const pixNum: number = pixelNumCol * pixelNumRow;
+
+    pixCanvas.width = pixelNumCol;
+    pixCanvas.height = pixelNumRow;
+
+    pixContext.drawImage(originalImage, 0, 0, pixelNumCol, pixelNumRow);
+    /* getting pixelated data */
+    const pixData = pixContext.getImageData(0, 0, pixelNumCol, pixelNumRow).data;
+
+    for (let pixel = 0; pixel < pixNum; pixel++) {
+      const col = pixel % pixelNumCol;
+      const row = Math.floor(pixel / pixelNumCol);
+      
+      const x = col * pixelSize;
+      const y = row * pixelSize;
+
+      const r = pixData[pixel * 4 + 0];
+      const g = pixData[pixel * 4 + 1];
+      const b = pixData[pixel * 4 + 2];
+      const a = pixData[pixel * 4 + 3];
+      
+      imgContext.fillStyle = `rgb(${r}, ${g}, ${b})`;
+
+      imgContext.save();
+      imgContext.translate(x, y);
+      
+      // ? Rectangle pixels
+      imgContext.fillRect(0, 0, pixelSize, pixelSize);
+      imgContext.fill();
+
+      // ? Circle pixels
+      // context.translate(cell * 0.5, cell * 0.5);
+      // context.beginPath();
+      // context.arc(0, 0, cell * 0.5, 0, Math.PI * 2);
+      // context.fill();
+
+      imgContext.restore();
+    }
+  }
 }
 
 input.addEventListener("change", (e:Event) : void => {
@@ -72,26 +131,13 @@ input.addEventListener("change", (e:Event) : void => {
   file = input.files[0];
   // ! if use this.files[0], "this" points to window because it is an arrow function
   showFile();
-
-  dropArea.classList.add("active");
-  
-  pixelateButton.classList.add("active");
 })
 
-// if user drag file over drag area
-dropArea.addEventListener("dragover", (event : any) : void => {
-  event.preventDefault(); // preventing from default behaviour
-  // console.log("File is on drop area");
-  dropArea.classList.add("active");
-  dragText.textContent = "Release to upload file";
-})
+// if user drag file over image area
+dropArea.addEventListener("dragover", (e) => showReleaseMsg(e));
 
-// if user leave dragged file from drag area
-dropArea.addEventListener("dragleave", () => {
-  // console.log("File is outside from drop area");
-  dropArea.classList.remove("active");
-  dragText.textContent = "Drag & Drop to Upload File";
-})
+// if user leave dragged file from image area
+dropArea.addEventListener("dragleave", () => showUploadMsg())
 
 // if user drop file on drag area
 dropArea.addEventListener("drop", (event : any) : void => {
@@ -114,51 +160,65 @@ const showFile = () => {
     fileReader.readAsDataURL(file);
     
     fileReader.onload = () => {
-      const originalImage = new Image();
-      
+      activatePixelate(imagePalette);
+
       let imageURL: string = `${fileReader.result}`;
       // console.log(imageURL); // this is a base64 format
       originalImage.src = imageURL;
 
       originalImage.addEventListener('load', () => {
-        const originalCanvas: HTMLCanvasElement = document.createElement('canvas');
+        imgArea.appendChild(imgCanvas);
 
-        imgArea.appendChild(originalCanvas);
-        
-        originalCanvas.width = CANVAS_WIDTH;
-        originalCanvas.height = CANVAS_HEIGHT;
-        
-        const originalContext: any = originalCanvas.getContext('2d');
-
-        /* adjusting image size to the frame size */
-        let imageWidth: number = originalImage.width;
-        let imageHeight: number = originalImage.height;
-
+        /* adjusting image size to the canvas size */
+        imageWidth = originalImage.width;
+        imageHeight = originalImage.height;
         const whRatio: number = imageWidth / imageHeight;
-
         if (whRatio >= 1) {
           /* width is bigger */
-          imageWidth = CANVAS_WIDTH;
+          imageWidth = CANVAS_MAX_WIDTH;
           imageHeight = imageWidth / whRatio;
         } else {
           /* height is bigger */
-          imageHeight = CANVAS_HEIGHT;
+          imageHeight = CANVAS_MAX_HEIGHT;
           imageWidth = imageHeight * whRatio;
         }
 
-        /* centering the image on canvas */
-        let x: number = (CANVAS_WIDTH / 2) - (imageWidth / 2);
-        let y: number = (CANVAS_HEIGHT / 2) - (imageHeight / 2);
-        let w: number = imageWidth;
-        let h: number = imageHeight;
-        
-        originalContext.drawImage(originalImage, x, y, w, h);
+        /* fitting canvas size to image size */
+        imgCanvas.width = imageWidth;
+        imgCanvas.height = imageHeight;
+
+        /* drawing the image on canvas */        
+        imgContext.drawImage(originalImage, 0, 0, imageWidth, imageHeight);
+
+        /* hide drop area */
+        dropArea.classList.add("hidden");
       });
     }
   } else {
     alert("This is not a valid image file");
     dragText.textContent = "Drag & Drop to Upload File";
   }
+}
+
+const showReleaseMsg = (event : any) : void => {
+  event.preventDefault(); // preventing from default behaviour
+  // console.log("File is on drop area");
+  dropArea.classList.add("active");
+  dragText.textContent = "Release to upload file";
+};
+
+const showUploadMsg = () => {
+  // console.log("File is outside from drop area");
+  dropArea.classList.remove("active");
+  dragText.textContent = "Drag & Drop to Upload File";
+};
+
+const activatePixelate = (color) => {
+  dropArea.classList.add("hidden");
+  
+  pixelateButton.classList.add("active");
+  document.body.style.background = color;
+  pixelateButton.style.background = color;
 }
 
 // 모듈임을 알려준다.
