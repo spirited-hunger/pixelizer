@@ -123,8 +123,8 @@ body * {
   flex-direction: column;
 
   /* size */
-  height: 800px;
-  width: 800px;
+  height: 600px;
+  width: 600px;
 
   /* position */
   z-index: 90;
@@ -144,10 +144,10 @@ body * {
 
 .palette-area {
   /* flex box */
-  /* display: flex;
+  display: flex;
   align-items: center;
   justify-content: flex-start;
-  flex-direction: column; */
+  flex-direction: column;
 
   /* size */
   margin: 0;
@@ -158,13 +158,13 @@ body * {
   z-index: 30;
   position: absolute;
   top: 50%;
-  left: 85%;
+  left: 95%;
   transform: translate(-50%, -50%);
 }
 
 .palette-area .item {
   /* size */
   margin: 2px;
-  height: 35px;
-  width: 35px;
+  height: 20px;
+  width: 20px;
 }

@@ -41,7 +41,7 @@
 const CANVAS_MAX_WIDTH : number = 1080;
 const CANVAS_MAX_HEIGHT : number = 1080;
 
-const PIXEL_SIZE : number = 30;
+const PIXEL_SIZE : number = 120;
 
 class Color {
   rgbString: string;
@@ -59,7 +59,8 @@ let palette : Color[] = []; // ! why?
 let imageWidth: number;
 let imageHeight: number;
 
-let colorFromImage = "linear-gradient(180deg, rgb(227,227,227) 0%, rgba(188,195,205) 100%)";
+// let colorFromImage = "linear-gradient(180deg, rgb(227,227,227) 0%, rgba(188,195,205) 100%)";
+let colorFromImage = "white";
 
 /* selecting all required elements */
 
@@ -276,11 +277,13 @@ need different amount of brightness for red green blue respectively
 This utility function will adjust each values of rgb to a visually accurate brightness value for human perception
 */
 const calculateRelativeBrightnes = (red: number, green: number, blue: number) : number => {
-  return Math.sqrt(
-    (red * red) * 0.299 +
-    (green * green) * 0.587 +
-    (blue * blue) * 0.114
-  )/100;
+  return Math.floor(
+    Math.sqrt(
+      (red * red) * 0.299 +
+      (green * green) * 0.587 +
+      (blue * blue) * 0.114
+    )
+  );
 };
 
 // 모듈임을 알려준다.

@@ -1,6 +1,6 @@
 const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
-const PIXEL_SIZE = 30;
+const PIXEL_SIZE = 120;
 class Color {
     constructor(r, g, b) {
         this.r = r;
@@ -13,7 +13,7 @@ class Color {
 let palette = [];
 let imageWidth;
 let imageHeight;
-let colorFromImage = "linear-gradient(180deg, rgb(227,227,227) 0%, rgba(188,195,205) 100%)";
+let colorFromImage = "white";
 const dropArea = document.querySelector(".drag-area");
 const dragText = dropArea.querySelector("#drag-and-drop-msg");
 const browseButton = dropArea.querySelector(".browseButton");
@@ -140,9 +140,9 @@ const activatePixelate = (color) => {
     pixelateButton.style.background = color;
 };
 const calculateRelativeBrightnes = (red, green, blue) => {
-    return Math.sqrt((red * red) * 0.299 +
+    return Math.floor(Math.sqrt((red * red) * 0.299 +
         (green * green) * 0.587 +
-        (blue * blue) * 0.114) / 100;
+        (blue * blue) * 0.114));
 };
 export {};
 //# sourceMappingURL=main.js.map
