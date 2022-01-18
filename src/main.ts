@@ -41,12 +41,26 @@
 const CANVAS_MAX_WIDTH : number = 1080;
 const CANVAS_MAX_HEIGHT : number = 1080;
 
-const PIXEL_SIZE : number = 10;
+const PIXEL_SIZE : number = 120;
+
+class Color {
+  rgbString: string;
+  constructor(
+    public r: number,
+    public g: number,
+    public b: number
+  ) {
+    this.rgbString = `rgb(${r}, ${g}, ${b})`;
+  }
+};
+
+let palette : Color[] = []; // ! why?
 
 let imageWidth: number;
 let imageHeight: number;
 
-let imagePalette = "linear-gradient(180deg, #E3E3E3 0%, #BCC3CD 100%)";
+// let colorFromImage = "linear-gradient(180deg, rgb(227,227,227) 0%, rgba(188,195,205) 100%)";
+let colorFromImage = "white";
 
 /* selecting all required elements */
 
@@ -62,7 +76,7 @@ const input: HTMLInputElement = dropArea.querySelector("input");
 /* image area */
 const imgArea: HTMLElement = document.querySelector(".image-area");
 
-const originalImage = new Image();
+const originalImage: HTMLImageElement = new Image();
 
 const imgCanvas: HTMLCanvasElement = document.createElement('canvas');
 const imgContext: any = imgCanvas.getContext('2d');
@@ -70,7 +84,10 @@ const imgContext: any = imgCanvas.getContext('2d');
 const pixCanvas: HTMLCanvasElement = document.createElement('canvas');
 const pixContext: any = pixCanvas.getContext('2d');
 
-let file : any;
+/* palette area */
+const paletteArea: HTMLDivElement = document.querySelector(".palette-area");
+
+let imgFile : any;
 
 browseButton.onclick = () => {
   input.click(); // if browseButton is clicked the input is also clicked
@@ -78,7 +95,12 @@ browseButton.onclick = () => {
 
 pixelateButton.onclick = () => {
   if (imageWidth !== undefined && imageHeight !== undefined) { // double-check if image is uploaded
+    // TODO : consider delete this console log
     console.log("pix!");
+
+    // deleting image with black
+    imgContext.fillStyle = "black";
+    imgContext.fillRect(0, 0, imgCanvas.width, imgCanvas.height);
 
     const pixelSize: number = PIXEL_SIZE;
     const pixelNumCol: number = Math.floor(imageWidth / pixelSize);
@@ -102,33 +124,44 @@ pixelateButton.onclick = () => {
       const r = pixData[pixel * 4 + 0];
       const g = pixData[pixel * 4 + 1];
       const b = pixData[pixel * 4 + 2];
-      const a = pixData[pixel * 4 + 3];
+      // const a = pixData[pixel * 4 + 3];
+
+      // TODO : alpha value test
+      // imgContext.globalAlpha = 0.8;
+
+      const currentColor = new Color(r, g, b);
       
-      imgContext.fillStyle = `rgb(${r}, ${g}, ${b})`;
+      imgContext.fillStyle = currentColor.rgbString;
+
+      // adding color in the palette if new
+      if (!palette.includes(currentColor)) {
+        palette.push(currentColor);
+      }
 
       imgContext.save();
       imgContext.translate(x, y);
       
       // ? Rectangle pixels
       imgContext.fillRect(0, 0, pixelSize, pixelSize);
-      imgContext.fill();
 
       // ? Circle pixels
-      // context.translate(cell * 0.5, cell * 0.5);
-      // context.beginPath();
-      // context.arc(0, 0, cell * 0.5, 0, Math.PI * 2);
-      // context.fill();
+      // imgContext.translate(pixelSize * 0.5, pixelSize * 0.5);
+      // imgContext.beginPath();
+      // imgContext.arc(0, 0, pixelSize * 0.5, 0, Math.PI * 2);
+      // imgContext.fill();
 
       imgContext.restore();
     }
   }
+
+  showPalette();
 }
 
 input.addEventListener("change", (e:Event) : void => {
   const input = (e.target as HTMLInputElement)
 
   // getting user select file and [0] means if a user selets multiple files we'll select only the first one
-  file = input.files[0];
+  imgFile = input.files[0];
   // ! if use this.files[0], "this" points to window because it is an arrow function
   showFile();
 })
@@ -145,22 +178,22 @@ dropArea.addEventListener("drop", (event : any) : void => {
   // console.log("File is dropped on drop area");
 
   // getting user select file and [0] means if a user selets multiple files we'll select only the first one
-  file = event.dataTransfer.files[0];
-  // console.log(file);
+  imgFile = event.dataTransfer.files[0];
+  // console.log(imgFile);
   showFile();
 })
 
 const showFile = () => {
-  let fileType = file.type;
-  let validExtentsions: Array<string> = ["image/jpeg", "image/jpg", "image/png"];
+  let fileType = imgFile.type;
+  let validExtentsions: string[] = ["image/jpeg", "image/jpg", "image/png"];
 
   if (validExtentsions.includes(fileType)) {
     let fileReader: FileReader = new FileReader();
     
-    fileReader.readAsDataURL(file);
+    fileReader.readAsDataURL(imgFile);
     
     fileReader.onload = () => {
-      activatePixelate(imagePalette);
+      activatePixelate(colorFromImage);
 
       let imageURL: string = `${fileReader.result}`;
       // console.log(imageURL); // this is a base64 format
@@ -207,19 +240,51 @@ const showReleaseMsg = (event : any) : void => {
   dragText.textContent = "Release to upload file";
 };
 
-const showUploadMsg = () => {
+const showUploadMsg = () : void => {
   // console.log("File is outside from drop area");
   dropArea.classList.remove("active");
   dragText.textContent = "Drag & Drop to Upload File";
 };
 
-const activatePixelate = (color) => {
+const showPalette = () : void => {
+  // sort by brightness
+  palette.sort((c1: Color, c2: Color) => {
+    const c1Brightness = calculateRelativeBrightnes(c1.r, c1.g, c1.b);
+    const c2Brightness = calculateRelativeBrightnes(c2.r, c2.g, c2.b);
+    return c2Brightness - c1Brightness;
+  })
+
+  for(let i = 0; i < palette.length; i++) {
+    const paletteItem = document.createElement('div');
+    paletteItem.classList.add("item");
+    paletteItem.style.background = palette[i].rgbString;
+    paletteArea.appendChild(paletteItem);
+  }
+};
+
+const activatePixelate = (color: string) : void => {
   dropArea.classList.add("hidden");
   
   pixelateButton.classList.add("active");
   document.body.style.background = color;
   pixelateButton.style.background = color;
-}
+};
+
+/* 
+Human eyes do not percieve red green and blue the same.
+need different amount of brightness for red green blue respectively 
+
+This utility function will adjust each values of rgb to a visually accurate brightness value for human perception
+*/
+const calculateRelativeBrightnes = (red: number, green: number, blue: number) : number => {
+  return Math.floor(
+    Math.sqrt(
+      (red * red) * 0.299 +
+      (green * green) * 0.587 +
+      (blue * blue) * 0.114
+    )
+  );
+};
 
 // 모듈임을 알려준다.
 export {};

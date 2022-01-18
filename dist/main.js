@@ -1,9 +1,19 @@
 const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
-const PIXEL_SIZE = 10;
+const PIXEL_SIZE = 120;
+class Color {
+    constructor(r, g, b) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.rgbString = `rgb(${r}, ${g}, ${b})`;
+    }
+}
+;
+let palette = [];
 let imageWidth;
 let imageHeight;
-let imagePalette = "linear-gradient(180deg, #E3E3E3 0%, #BCC3CD 100%)";
+let colorFromImage = "white";
 const dropArea = document.querySelector(".drag-area");
 const dragText = dropArea.querySelector("#drag-and-drop-msg");
 const browseButton = dropArea.querySelector(".browseButton");
@@ -15,13 +25,16 @@ const imgCanvas = document.createElement('canvas');
 const imgContext = imgCanvas.getContext('2d');
 const pixCanvas = document.createElement('canvas');
 const pixContext = pixCanvas.getContext('2d');
-let file;
+const paletteArea = document.querySelector(".palette-area");
+let imgFile;
 browseButton.onclick = () => {
     input.click();
 };
 pixelateButton.onclick = () => {
     if (imageWidth !== undefined && imageHeight !== undefined) {
         console.log("pix!");
+        imgContext.fillStyle = "black";
+        imgContext.fillRect(0, 0, imgCanvas.width, imgCanvas.height);
         const pixelSize = PIXEL_SIZE;
         const pixelNumCol = Math.floor(imageWidth / pixelSize);
         const pixelNumRow = Math.floor(imageHeight / pixelSize);
@@ -38,36 +51,39 @@ pixelateButton.onclick = () => {
             const r = pixData[pixel * 4 + 0];
             const g = pixData[pixel * 4 + 1];
             const b = pixData[pixel * 4 + 2];
-            const a = pixData[pixel * 4 + 3];
-            imgContext.fillStyle = `rgb(${r}, ${g}, ${b})`;
+            const currentColor = new Color(r, g, b);
+            imgContext.fillStyle = currentColor.rgbString;
+            if (!palette.includes(currentColor)) {
+                palette.push(currentColor);
+            }
             imgContext.save();
             imgContext.translate(x, y);
             imgContext.fillRect(0, 0, pixelSize, pixelSize);
-            imgContext.fill();
             imgContext.restore();
         }
     }
+    showPalette();
 };
 input.addEventListener("change", (e) => {
     const input = e.target;
-    file = input.files[0];
+    imgFile = input.files[0];
     showFile();
 });
 dropArea.addEventListener("dragover", (e) => showReleaseMsg(e));
 dropArea.addEventListener("dragleave", () => showUploadMsg());
 dropArea.addEventListener("drop", (event) => {
     event.preventDefault();
-    file = event.dataTransfer.files[0];
+    imgFile = event.dataTransfer.files[0];
     showFile();
 });
 const showFile = () => {
-    let fileType = file.type;
+    let fileType = imgFile.type;
     let validExtentsions = ["image/jpeg", "image/jpg", "image/png"];
     if (validExtentsions.includes(fileType)) {
         let fileReader = new FileReader();
-        fileReader.readAsDataURL(file);
+        fileReader.readAsDataURL(imgFile);
         fileReader.onload = () => {
-            activatePixelate(imagePalette);
+            activatePixelate(colorFromImage);
             let imageURL = `${fileReader.result}`;
             originalImage.src = imageURL;
             originalImage.addEventListener('load', () => {
@@ -104,11 +120,29 @@ const showUploadMsg = () => {
     dropArea.classList.remove("active");
     dragText.textContent = "Drag & Drop to Upload File";
 };
+const showPalette = () => {
+    palette.sort((c1, c2) => {
+        const c1Brightness = calculateRelativeBrightnes(c1.r, c1.g, c1.b);
+        const c2Brightness = calculateRelativeBrightnes(c2.r, c2.g, c2.b);
+        return c2Brightness - c1Brightness;
+    });
+    for (let i = 0; i < palette.length; i++) {
+        const paletteItem = document.createElement('div');
+        paletteItem.classList.add("item");
+        paletteItem.style.background = palette[i].rgbString;
+        paletteArea.appendChild(paletteItem);
+    }
+};
 const activatePixelate = (color) => {
     dropArea.classList.add("hidden");
     pixelateButton.classList.add("active");
     document.body.style.background = color;
     pixelateButton.style.background = color;
+};
+const calculateRelativeBrightnes = (red, green, blue) => {
+    return Math.floor(Math.sqrt((red * red) * 0.299 +
+        (green * green) * 0.587 +
+        (blue * blue) * 0.114));
 };
 export {};
 //# sourceMappingURL=main.js.map
