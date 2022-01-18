@@ -5,7 +5,7 @@ a website to create pixel art from images
 
 started : 2021. 12. 24
 
-estimated finish time : 2022. 1. 14 
+estimated finish time : 2021. 1. 14 
 
 [Dev Log](https://github.com/spirited-hunger/pixelizer/projects/1)
 
