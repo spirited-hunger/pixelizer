@@ -13,5 +13,5 @@ exploring following subjects
 - No frameworks to minimize my coding dependencies
 - Flexbox & grid for minimalist layout
 - ES modules to organize files
-- Processing images using canvas 2d context
+- Processing images using canvas 2d context (resizing, pixelating, adding noise)
 - Typescript for static Javascript typing
