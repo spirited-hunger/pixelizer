@@ -9,3 +9,9 @@ estimated finish time : 2021. 1. 21
 
 [Dev Log](https://github.com/spirited-hunger/pixelizer/projects/1)
 
+exploring following subjects 
+- No frameworks to minimize my dependencies
+- Flexbox & grid for minimalist layout
+- ES modules to organize files
+- Processing images using canvas 2d context
+- Typescript for static Javascript typing
