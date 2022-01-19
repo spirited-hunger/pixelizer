@@ -12,6 +12,6 @@ estimated finish time : 2021. 1. 21
 exploring following subjects 
 - No frameworks to minimize my coding dependencies
 - Flexbox & grid for minimalist layout
-- ES modules to organize files
+- ES modules to organize files and enhance code readability
 - Processing images using canvas 2d context (resizing, pixelating, adding noise)
 - Typescript for static Javascript typing
