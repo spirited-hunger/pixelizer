@@ -1,8 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
-const PIXEL_SIZE = 120;
+const PIXEL_SIZE = 10;
 class Color {
     constructor(r, g, b) {
         this.r = r;
@@ -103,6 +101,10 @@ const showFile = () => {
                 }
                 imgCanvas.width = imageWidth;
                 imgCanvas.height = imageHeight;
+                const imageCSSWH = Number(window.getComputedStyle(imgCanvas).width.split("px")[0]);
+                console.log(imageCSSWH);
+                imgCanvas.style.width = `${Math.floor(imageWidth * imageCSSWH / CANVAS_MAX_WIDTH)}px`;
+                imgCanvas.style.height = `${Math.floor(imageHeight * imageCSSWH / CANVAS_MAX_HEIGHT)}px`;
                 imgContext.drawImage(originalImage, 0, 0, imageWidth, imageHeight);
                 dropArea.classList.add("hidden");
             });
@@ -122,20 +124,19 @@ const showUploadMsg = () => {
     dropArea.classList.remove("active");
     dragText.textContent = "Drag & Drop to Upload File";
 };
-const showPalette = () => {
-    Promise.resolve().then(() => require("./functions/calculate")).then(calculate => {
-        palette.sort((c1, c2) => {
-            const c1Brightness = calculate.relativeBrightness(c1.r, c1.g, c1.b);
-            const c2Brightness = calculate.relativeBrightness(c2.r, c2.g, c2.b);
-            return c2Brightness - c1Brightness;
-        });
-        for (let i = 0; i < palette.length; i++) {
-            const paletteItem = document.createElement('div');
-            paletteItem.classList.add("item");
-            paletteItem.style.background = palette[i].rgbString;
-            paletteArea.appendChild(paletteItem);
-        }
+const showPalette = async () => {
+    const calculate = await import("./functions/calculate.js");
+    palette.sort((c1, c2) => {
+        const c1Brightness = calculate.relativeBrightness(c1.r, c1.g, c1.b);
+        const c2Brightness = calculate.relativeBrightness(c2.r, c2.g, c2.b);
+        return c2Brightness - c1Brightness;
     });
+    for (let i = 0; i < palette.length; i++) {
+        const paletteItem = document.createElement('div');
+        paletteItem.classList.add("item");
+        paletteItem.style.background = palette[i].rgbString;
+        paletteArea.appendChild(paletteItem);
+    }
 };
 const activatePixelate = (color) => {
     dropArea.classList.add("hidden");
@@ -143,9 +144,5 @@ const activatePixelate = (color) => {
     document.body.style.background = color;
     pixelateButton.style.background = color;
 };
-const calculateRelativeBrightnes = (red, green, blue) => {
-    return Math.floor(Math.sqrt((red * red) * 0.299 +
-        (green * green) * 0.587 +
-        (blue * blue) * 0.114));
-};
+export {};
 //# sourceMappingURL=main.js.map

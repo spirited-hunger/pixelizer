@@ -41,7 +41,7 @@
 const CANVAS_MAX_WIDTH : number = 1080;
 const CANVAS_MAX_HEIGHT : number = 1080;
 
-const PIXEL_SIZE : number = 120;
+const PIXEL_SIZE : number = 10;
 
 class Color {
   rgbString: string;
@@ -219,6 +219,17 @@ const showFile = () => {
         imgCanvas.width = imageWidth;
         imgCanvas.height = imageHeight;
 
+        /* fit canvas in screen */
+        // TODO : 마진 값 확인하기 (진짜 1080 픽셀이 맞는지)
+        const imageCSSWH = Number(window.getComputedStyle(imgCanvas).width.split("px")[0]);
+        console.log(imageCSSWH)
+        imgCanvas.style.width = `${
+          Math.floor(imageWidth * imageCSSWH / CANVAS_MAX_WIDTH)
+        }px`;
+        imgCanvas.style.height = `${
+          Math.floor(imageHeight * imageCSSWH / CANVAS_MAX_HEIGHT)
+        }px`;
+
         /* drawing the image on canvas */        
         imgContext.drawImage(originalImage, 0, 0, imageWidth, imageHeight);
 
@@ -245,23 +256,22 @@ const showUploadMsg = () : void => {
   dragText.textContent = "Drag & Drop to Upload File";
 };
 
-const showPalette = () : void => {
-  import("./functions/calculate").then(calculate => {
-    // sort by brightness
-    palette.sort((c1: Color, c2: Color) => {
-      const c1Brightness = calculate.relativeBrightness(c1.r, c1.g, c1.b);
-      const c2Brightness = calculate.relativeBrightness(c2.r, c2.g, c2.b);
-      return c2Brightness - c1Brightness;
-    })
+const showPalette = async () : Promise<void> => {
+  const calculate = await import("./functions/calculate.js");
   
-    for(let i = 0; i < palette.length; i++) {
-      const paletteItem = document.createElement('div');
-      paletteItem.classList.add("item");
-      paletteItem.style.background = palette[i].rgbString;
-      paletteArea.appendChild(paletteItem);
-    }
+  // sort by brightness
+  palette.sort((c1: Color, c2: Color) => {
+    const c1Brightness = calculate.relativeBrightness(c1.r, c1.g, c1.b);
+    const c2Brightness = calculate.relativeBrightness(c2.r, c2.g, c2.b);
+    return c2Brightness - c1Brightness;
   })
 
+  for (let i = 0; i < palette.length; i++) {
+    const paletteItem = document.createElement('div');
+    paletteItem.classList.add("item");
+    paletteItem.style.background = palette[i].rgbString;
+    paletteArea.appendChild(paletteItem);
+  }
 };
 
 const activatePixelate = (color: string) : void => {
@@ -270,22 +280,6 @@ const activatePixelate = (color: string) : void => {
   pixelateButton.classList.add("active");
   document.body.style.background = color;
   pixelateButton.style.background = color;
-};
-
-/* 
-Human eyes do not percieve red green and blue the same.
-need different amount of brightness for red green blue respectively 
-
-This utility function will adjust each values of rgb to a visually accurate brightness value for human perception
-*/
-const calculateRelativeBrightnes = (red: number, green: number, blue: number) : number => {
-  return Math.floor(
-    Math.sqrt(
-      (red * red) * 0.299 +
-      (green * green) * 0.587 +
-      (blue * blue) * 0.114
-    )
-  );
 };
 
 // 모듈임을 알려준다.
