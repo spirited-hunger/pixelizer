@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const myImage = new Image();
 myImage.src = "https://picsum.photos/200";
 myImage.setAttribute('crossOrigin', '');
@@ -73,4 +71,5 @@ myImage.addEventListener('load', () => {
     }
     animate();
 });
+export {};
 //# sourceMappingURL=particleRain.js.map

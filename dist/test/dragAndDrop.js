@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const dropArea = document.querySelector(".drag-area");
 const dragText = dropArea.querySelector("h1");
 const button = dropArea.querySelector("button");
@@ -44,4 +42,5 @@ const showFile = () => {
         dragText.textContent = "Drag & Drop to Upload File";
     }
 };
+export {};
 //# sourceMappingURL=dragAndDrop.js.map

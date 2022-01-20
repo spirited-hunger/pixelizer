@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "es2020",
     "lib": ["es6", "dom", "es2017"],
     "target": "es2017",
     "removeComments": true,
