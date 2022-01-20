@@ -59,8 +59,7 @@ let palette : Color[] = []; // ! why?
 let imageWidth: number;
 let imageHeight: number;
 
-// let colorFromImage = "linear-gradient(180deg, rgb(227,227,227) 0%, rgba(188,195,205) 100%)";
-let colorFromImage = "white";
+let colorFromImage = "linear-gradient(180deg, rgb(227,227,227) 0%, rgba(188,195,205) 100%)";
 
 /* selecting all required elements */
 
@@ -95,7 +94,7 @@ browseButton.onclick = () => {
 
 pixelateButton.onclick = () => {
   if (imageWidth !== undefined && imageHeight !== undefined) { // double-check if image is uploaded
-    // TODO : consider delete this console log
+    // TODO : consider deleting this console log
     console.log("pix!");
 
     // deleting image with black
@@ -247,19 +246,22 @@ const showUploadMsg = () : void => {
 };
 
 const showPalette = () : void => {
-  // sort by brightness
-  palette.sort((c1: Color, c2: Color) => {
-    const c1Brightness = calculateRelativeBrightnes(c1.r, c1.g, c1.b);
-    const c2Brightness = calculateRelativeBrightnes(c2.r, c2.g, c2.b);
-    return c2Brightness - c1Brightness;
+  import("./functions/calculate").then(calculate => {
+    // sort by brightness
+    palette.sort((c1: Color, c2: Color) => {
+      const c1Brightness = calculate.relativeBrightness(c1.r, c1.g, c1.b);
+      const c2Brightness = calculate.relativeBrightness(c2.r, c2.g, c2.b);
+      return c2Brightness - c1Brightness;
+    })
+  
+    for(let i = 0; i < palette.length; i++) {
+      const paletteItem = document.createElement('div');
+      paletteItem.classList.add("item");
+      paletteItem.style.background = palette[i].rgbString;
+      paletteArea.appendChild(paletteItem);
+    }
   })
 
-  for(let i = 0; i < palette.length; i++) {
-    const paletteItem = document.createElement('div');
-    paletteItem.classList.add("item");
-    paletteItem.style.background = palette[i].rgbString;
-    paletteArea.appendChild(paletteItem);
-  }
 };
 
 const activatePixelate = (color: string) : void => {

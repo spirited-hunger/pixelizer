@@ -110,3 +110,5 @@ myImage.addEventListener('load', () => { // after all, base64 is a url request. 
   }
   animate();
 })
+
+export {};
