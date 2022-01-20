@@ -150,16 +150,17 @@ body * {
   flex-direction: column;
 
   /* size */
-  margin: 0;
-  min-height: 100px;
   width: 30px;
+  height: 600px;
 
   /* position */
   z-index: 30;
   position: absolute;
   top: 50%;
-  left: 95%;
+  left: 85%;
   transform: translate(-50%, -50%);
+
+  overflow: hidden;
 }
 
 .palette-area .item {

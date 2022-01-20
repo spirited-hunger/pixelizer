@@ -11,4 +11,5 @@ function greeter(person) {
 }
 let user = new Student("Jane", "M.", "User");
 document.body.textContent = greeter(user);
+export {};
 //# sourceMappingURL=greeter.js.map

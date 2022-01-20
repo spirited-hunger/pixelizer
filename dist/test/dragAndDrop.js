@@ -42,4 +42,5 @@ const showFile = () => {
         dragText.textContent = "Drag & Drop to Upload File";
     }
 };
+export {};
 //# sourceMappingURL=dragAndDrop.js.map
