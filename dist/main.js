@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
 const PIXEL_SIZE = 120;
@@ -13,7 +15,7 @@ class Color {
 let palette = [];
 let imageWidth;
 let imageHeight;
-let colorFromImage = "white";
+let colorFromImage = "linear-gradient(180deg, rgb(227,227,227) 0%, rgba(188,195,205) 100%)";
 const dropArea = document.querySelector(".drag-area");
 const dragText = dropArea.querySelector("#drag-and-drop-msg");
 const browseButton = dropArea.querySelector(".browseButton");
@@ -121,17 +123,19 @@ const showUploadMsg = () => {
     dragText.textContent = "Drag & Drop to Upload File";
 };
 const showPalette = () => {
-    palette.sort((c1, c2) => {
-        const c1Brightness = calculateRelativeBrightnes(c1.r, c1.g, c1.b);
-        const c2Brightness = calculateRelativeBrightnes(c2.r, c2.g, c2.b);
-        return c2Brightness - c1Brightness;
+    Promise.resolve().then(() => require("./functions/calculate")).then(calculate => {
+        palette.sort((c1, c2) => {
+            const c1Brightness = calculate.relativeBrightness(c1.r, c1.g, c1.b);
+            const c2Brightness = calculate.relativeBrightness(c2.r, c2.g, c2.b);
+            return c2Brightness - c1Brightness;
+        });
+        for (let i = 0; i < palette.length; i++) {
+            const paletteItem = document.createElement('div');
+            paletteItem.classList.add("item");
+            paletteItem.style.background = palette[i].rgbString;
+            paletteArea.appendChild(paletteItem);
+        }
     });
-    for (let i = 0; i < palette.length; i++) {
-        const paletteItem = document.createElement('div');
-        paletteItem.classList.add("item");
-        paletteItem.style.background = palette[i].rgbString;
-        paletteArea.appendChild(paletteItem);
-    }
 };
 const activatePixelate = (color) => {
     dropArea.classList.add("hidden");
@@ -144,5 +148,4 @@ const calculateRelativeBrightnes = (red, green, blue) => {
         (green * green) * 0.587 +
         (blue * blue) * 0.114));
 };
-export {};
 //# sourceMappingURL=main.js.map

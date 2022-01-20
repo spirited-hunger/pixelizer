@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const dropArea = document.querySelector(".drag-area");
 const dragText = dropArea.querySelector("h1");
 const button = dropArea.querySelector("button");
