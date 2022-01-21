@@ -1,8 +1,7 @@
 node_modules
 
 # Output
-dist/*.js.map
-dist/*/*.js.map
+dist/**/*.js.map
 
 # Mac
 .DS_Store
