@@ -20,28 +20,39 @@ const browseButton = dropArea.querySelector(".browseButton");
 const pixelateButton = document.querySelector(".pixelateButton");
 const input = dropArea.querySelector("input");
 const imgArea = document.querySelector(".image-area");
-const originalImage = new Image();
 const imgCanvas = document.createElement('canvas');
 const imgContext = imgCanvas.getContext('2d');
 const pixCanvas = document.createElement('canvas');
 const pixContext = pixCanvas.getContext('2d');
 const paletteArea = document.querySelector(".palette-area");
 let imgFile;
-browseButton.onclick = () => {
+browseButton.addEventListener("click", () => {
     input.click();
-};
-pixelateButton.onclick = () => {
+});
+input.addEventListener("change", (e) => {
+    const input = e.target;
+    imgFile = input.files[0];
+    showFile();
+});
+dropArea.addEventListener("dragover", (e) => showReleaseMsg(e));
+dropArea.addEventListener("dragleave", () => showUploadMsg());
+dropArea.addEventListener("drop", (e) => {
+    e.preventDefault();
+    imgFile = e.dataTransfer.files[0];
+    showFile();
+});
+pixelateButton.addEventListener("click", () => {
     if (imageWidth !== undefined && imageHeight !== undefined) {
         console.log("pix!");
-        imgContext.fillStyle = "black";
-        imgContext.fillRect(0, 0, imgCanvas.width, imgCanvas.height);
         const pixelSize = PIXEL_SIZE;
         const pixelNumCol = Math.floor(imageWidth / pixelSize);
         const pixelNumRow = Math.floor(imageHeight / pixelSize);
         const pixNum = pixelNumCol * pixelNumRow;
         pixCanvas.width = pixelNumCol;
         pixCanvas.height = pixelNumRow;
-        pixContext.drawImage(originalImage, 0, 0, pixelNumCol, pixelNumRow);
+        pixContext.drawImage(imgCanvas, 0, 0, pixelNumCol, pixelNumRow);
+        imgContext.fillStyle = "black";
+        imgContext.fillRect(0, 0, imgCanvas.width, imgCanvas.height);
         const pixData = pixContext.getImageData(0, 0, pixelNumCol, pixelNumRow).data;
         for (let pixel = 0; pixel < pixNum; pixel++) {
             const col = pixel % pixelNumCol;
@@ -63,23 +74,12 @@ pixelateButton.onclick = () => {
         }
     }
     showPalette();
-};
-input.addEventListener("change", (e) => {
-    const input = e.target;
-    imgFile = input.files[0];
-    showFile();
-});
-dropArea.addEventListener("dragover", (e) => showReleaseMsg(e));
-dropArea.addEventListener("dragleave", () => showUploadMsg());
-dropArea.addEventListener("drop", (event) => {
-    event.preventDefault();
-    imgFile = event.dataTransfer.files[0];
-    showFile();
 });
 const showFile = () => {
     let fileType = imgFile.type;
     let validExtentsions = ["image/jpeg", "image/jpg", "image/png"];
     if (validExtentsions.includes(fileType)) {
+        const originalImage = new Image();
         let fileReader = new FileReader();
         fileReader.readAsDataURL(imgFile);
         fileReader.onload = () => {
@@ -102,7 +102,6 @@ const showFile = () => {
                 imgCanvas.width = imageWidth;
                 imgCanvas.height = imageHeight;
                 const imageCSSWH = Number(window.getComputedStyle(imgCanvas).width.split("px")[0]);
-                console.log(imageCSSWH);
                 imgCanvas.style.width = `${Math.floor(imageWidth * imageCSSWH / CANVAS_MAX_WIDTH)}px`;
                 imgCanvas.style.height = `${Math.floor(imageHeight * imageCSSWH / CANVAS_MAX_HEIGHT)}px`;
                 imgContext.drawImage(originalImage, 0, 0, imageWidth, imageHeight);
