@@ -42,7 +42,7 @@
 const CANVAS_MAX_WIDTH : number = 1080;
 const CANVAS_MAX_HEIGHT : number = 1080;
 
-const PIXEL_SIZE : number = 10;
+const PIXEL_SIZE : number = 200;
 
 class Color {
   rgbString: string;

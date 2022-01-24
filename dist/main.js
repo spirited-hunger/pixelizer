@@ -1,6 +1,6 @@
 const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
-const PIXEL_SIZE = 10;
+const PIXEL_SIZE = 200;
 class Color {
     constructor(r, g, b) {
         this.r = r;
