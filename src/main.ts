@@ -82,6 +82,9 @@ const imgContext: any = imgCanvas.getContext('2d');
 const pixCanvas: HTMLCanvasElement = document.createElement('canvas');
 const pixContext: any = pixCanvas.getContext('2d');
 
+const resultCanvas: HTMLCanvasElement = document.createElement('canvas');
+const resultContext: any = imgCanvas.getContext('2d');
+
 /* palette area */
 const paletteArea: HTMLDivElement = document.querySelector(".palette-area");
 
@@ -135,12 +138,15 @@ pixelateButton.addEventListener("click", () => {
 
     pixCanvas.width = pixelNumCol;
     pixCanvas.height = pixelNumRow;
-
+    
     pixContext.drawImage(imgCanvas, 0, 0, pixelNumCol, pixelNumRow);
 
     // deleting image with black
-    imgContext.fillStyle = "black";
-    imgContext.fillRect(0, 0, imgCanvas.width, imgCanvas.height);
+    resultContext.width = imgCanvas.width;
+    resultContext.height = imgCanvas.height;
+    resultContext.fillStyle = "black";
+    resultContext.fillRect(0, 0, imgCanvas.width, imgCanvas.height);
+    imgArea.appendChild(resultCanvas);
 
     /* getting pixelated data */
     const pixData = pixContext.getImageData(0, 0, pixelNumCol, pixelNumRow).data;
@@ -162,24 +168,24 @@ pixelateButton.addEventListener("click", () => {
 
       const currentColor = new Color(r, g, b);
       
-      imgContext.fillStyle = currentColor.rgbString;
+      resultContext.fillStyle = currentColor.rgbString;
 
       // adding color in the palette if new
       if (!palette.includes(currentColor)) {
         palette.push(currentColor);
       }
 
-      imgContext.save();
-      imgContext.translate(x, y);
+      resultContext.save();
+      resultContext.translate(x, y);
       
       // ? Rectangle pixels
-      imgContext.fillRect(0, 0, pixelSize, pixelSize);
+      resultContext.fillRect(0, 0, pixelSize, pixelSize);
 
       // ? Circle pixels
-      // imgContext.translate(pixelSize * 0.5, pixelSize * 0.5);
-      // imgContext.beginPath();
-      // imgContext.arc(0, 0, pixelSize * 0.5, 0, Math.PI * 2);
-      // imgContext.fill();
+      // resultContext.translate(pixelSize * 0.5, pixelSize * 0.5);
+      // resultContext.beginPath();
+      // resultContext.arc(0, 0, pixelSize * 0.5, 0, Math.PI * 2);
+      // resultContext.fill();
 
       imgContext.restore();
     }
