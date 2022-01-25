@@ -1,6 +1,7 @@
 const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
-const PIXEL_SIZE = 200;
+const PIXEL_SIZE = 100;
+const MAX_COLOR_DIST = 150;
 class Color {
     constructor(r, g, b) {
         this.r = r;
@@ -67,13 +68,34 @@ pixelateButton.addEventListener("click", () => {
             const r = pixData[pixel * 4 + 0];
             const g = pixData[pixel * 4 + 1];
             const b = pixData[pixel * 4 + 2];
-            const currentColor = new Color(r, g, b);
-            resultContext.fillStyle = currentColor.rgbString;
-            if (!palette.includes(currentColor)) {
+            let currentColor = new Color(r, g, b);
+            if (palette.length === 0) {
                 palette.push(currentColor);
+            }
+            else {
+                const paletteLength = palette.length;
+                for (let i = 0; i < paletteLength; i++) {
+                    const pr = palette[i].r;
+                    const pg = palette[i].g;
+                    const pb = palette[i].b;
+                    const cr = currentColor.r;
+                    const cg = currentColor.g;
+                    const cb = currentColor.b;
+                    const colorDist = Math.sqrt((pr - cr) ** 2 + (pg - cg) ** 2 + (pb - cb) ** 2);
+                    if (colorDist < MAX_COLOR_DIST) {
+                        palette[i].r = (pr + cr) * 0.5;
+                        palette[i].g = (pg + cg) * 0.5;
+                        palette[i].b = (pb + cb) * 0.5;
+                        break;
+                    }
+                    else {
+                        palette.push(currentColor);
+                    }
+                }
             }
             resultContext.save();
             resultContext.translate(x, y);
+            resultContext.fillStyle = currentColor.rgbString;
             resultContext.fillRect(0, 0, pixelSize, pixelSize);
             imgContext.restore();
         }
