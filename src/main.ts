@@ -42,7 +42,9 @@
 const CANVAS_MAX_WIDTH : number = 1080;
 const CANVAS_MAX_HEIGHT : number = 1080;
 
-const PIXEL_SIZE : number = 200;
+const PIXEL_SIZE : number = 20;
+
+const MAX_COLOR_DIST : number = 90;
 
 class Color {
   rgbString: string;
@@ -142,8 +144,11 @@ pixelateButton.addEventListener("click", () => {
     pixContext.drawImage(imgCanvas, 0, 0, pixelNumCol, pixelNumRow);
 
     // deleting image with black
+    resultCanvas.style.width = `${imgCanvas.width}px`;
+    resultCanvas.style.height = `${imgCanvas.height}px`;
     resultContext.width = imgCanvas.width;
     resultContext.height = imgCanvas.height;
+
     resultContext.fillStyle = "black";
     resultContext.fillRect(0, 0, imgCanvas.width, imgCanvas.height);
     imgArea.appendChild(resultCanvas);
@@ -151,6 +156,7 @@ pixelateButton.addEventListener("click", () => {
     /* getting pixelated data */
     const pixData = pixContext.getImageData(0, 0, pixelNumCol, pixelNumRow).data;
 
+    // 비슷한 색깔 골라 팔레트 만들기
     for (let pixel = 0; pixel < pixNum; pixel++) {
       const col = pixel % pixelNumCol;
       const row = Math.floor(pixel / pixelNumCol);
@@ -166,17 +172,61 @@ pixelateButton.addEventListener("click", () => {
       // TODO : alpha value test
       // imgContext.globalAlpha = 0.8;
 
-      const currentColor = new Color(r, g, b);
+      let currentColor = new Color(r, g, b);
       
-      resultContext.fillStyle = currentColor.rgbString;
-
       // adding color in the palette if new
-      if (!palette.includes(currentColor)) {
+      // if it's a first color
+      if (palette.length === 0) {
         palette.push(currentColor);
+      } else {
+        const paletteLength = palette.length;
+        let thereIsSimilarColor : boolean = false;
+
+        for (let i = 0; i < paletteLength; i ++) {
+          const pr = palette[i].r;
+          const pg = palette[i].g;
+          const pb = palette[i].b;
+
+          const cr = currentColor.r;
+          const cg = currentColor.g;
+          const cb = currentColor.b;
+
+          const redDiff = cr - pr;
+          const greenDiff = cg - pg;
+          const blueDiff = cb - pb;
+
+          /* Euclidean distance */
+          // const colorDist = Math.sqrt(redDiff ** 2 + greenDiff ** 2 + blueDiff ** 2);
+
+          /*
+            a low-cost approximation algoritm getting color distance from rgb values 
+            https://www.compuphase.com/cmetric.htm 
+          */
+          const redComp = (cr + pr) * 0.5;
+          const colorDist = Math.sqrt(
+            (2 + redComp / 256) * redDiff * redDiff +
+            4 * greenDiff * greenDiff +
+            (2 + ((255 - redDiff) / 256)) * blueDiff * blueDiff
+          );
+
+          if (colorDist < MAX_COLOR_DIST) {
+            // palette[i].r = (pr + cr) * 0.5;
+            // palette[i].g = (pg + cg) * 0.5;
+            // palette[i].b = (pb + cb) * 0.5;
+            thereIsSimilarColor = true;
+            break;
+          } else {
+            thereIsSimilarColor = false;
+          }
+        }
+        if (!thereIsSimilarColor) {
+          palette.push(currentColor);
+        }
       }
 
       resultContext.save();
       resultContext.translate(x, y);
+      resultContext.fillStyle = currentColor.rgbString;
       
       // ? Rectangle pixels
       resultContext.fillRect(0, 0, pixelSize, pixelSize);
@@ -190,7 +240,6 @@ pixelateButton.addEventListener("click", () => {
       imgContext.restore();
     }
   }
-
   showPalette();
 });
 

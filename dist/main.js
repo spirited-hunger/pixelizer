@@ -1,6 +1,7 @@
 const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
-const PIXEL_SIZE = 200;
+const PIXEL_SIZE = 20;
+const MAX_COLOR_DIST = 90;
 class Color {
     constructor(r, g, b) {
         this.r = r;
@@ -53,6 +54,8 @@ pixelateButton.addEventListener("click", () => {
         pixCanvas.width = pixelNumCol;
         pixCanvas.height = pixelNumRow;
         pixContext.drawImage(imgCanvas, 0, 0, pixelNumCol, pixelNumRow);
+        resultCanvas.style.width = `${imgCanvas.width}px`;
+        resultCanvas.style.height = `${imgCanvas.height}px`;
         resultContext.width = imgCanvas.width;
         resultContext.height = imgCanvas.height;
         resultContext.fillStyle = "black";
@@ -67,13 +70,42 @@ pixelateButton.addEventListener("click", () => {
             const r = pixData[pixel * 4 + 0];
             const g = pixData[pixel * 4 + 1];
             const b = pixData[pixel * 4 + 2];
-            const currentColor = new Color(r, g, b);
-            resultContext.fillStyle = currentColor.rgbString;
-            if (!palette.includes(currentColor)) {
+            let currentColor = new Color(r, g, b);
+            if (palette.length === 0) {
                 palette.push(currentColor);
+            }
+            else {
+                const paletteLength = palette.length;
+                let thereIsSimilarColor = false;
+                for (let i = 0; i < paletteLength; i++) {
+                    const pr = palette[i].r;
+                    const pg = palette[i].g;
+                    const pb = palette[i].b;
+                    const cr = currentColor.r;
+                    const cg = currentColor.g;
+                    const cb = currentColor.b;
+                    const redDiff = cr - pr;
+                    const greenDiff = cg - pg;
+                    const blueDiff = cb - pb;
+                    const redComp = (cr + pr) * 0.5;
+                    const colorDist = Math.sqrt((2 + redComp / 256) * redDiff * redDiff +
+                        4 * greenDiff * greenDiff +
+                        (2 + ((255 - redDiff) / 256)) * blueDiff * blueDiff);
+                    if (colorDist < MAX_COLOR_DIST) {
+                        thereIsSimilarColor = true;
+                        break;
+                    }
+                    else {
+                        thereIsSimilarColor = false;
+                    }
+                }
+                if (!thereIsSimilarColor) {
+                    palette.push(currentColor);
+                }
             }
             resultContext.save();
             resultContext.translate(x, y);
+            resultContext.fillStyle = currentColor.rgbString;
             resultContext.fillRect(0, 0, pixelSize, pixelSize);
             imgContext.restore();
         }
