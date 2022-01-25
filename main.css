@@ -137,7 +137,13 @@ body * {
 .image-area canvas {
   height: 100%;
   width: 100%;
-  object-fit: contain;
+  margin: 0;
+  /* position */
+  z-index: 90;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* palette area */
@@ -151,7 +157,7 @@ body * {
 
   /* size */
   width: 30px;
-  height: 600px;
+  /* height: 600px; */
 
   /* position */
   z-index: 30;
