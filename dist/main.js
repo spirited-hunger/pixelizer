@@ -1,7 +1,7 @@
 const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
-const PIXEL_SIZE = 100;
-const MAX_COLOR_DIST = 150;
+const PIXEL_SIZE = 20;
+const MAX_COLOR_DIST = 90;
 class Color {
     constructor(r, g, b) {
         this.r = r;
@@ -54,6 +54,8 @@ pixelateButton.addEventListener("click", () => {
         pixCanvas.width = pixelNumCol;
         pixCanvas.height = pixelNumRow;
         pixContext.drawImage(imgCanvas, 0, 0, pixelNumCol, pixelNumRow);
+        resultCanvas.style.width = `${imgCanvas.width}px`;
+        resultCanvas.style.height = `${imgCanvas.height}px`;
         resultContext.width = imgCanvas.width;
         resultContext.height = imgCanvas.height;
         resultContext.fillStyle = "black";
@@ -74,6 +76,7 @@ pixelateButton.addEventListener("click", () => {
             }
             else {
                 const paletteLength = palette.length;
+                let thereIsSimilarColor = false;
                 for (let i = 0; i < paletteLength; i++) {
                     const pr = palette[i].r;
                     const pg = palette[i].g;
@@ -81,16 +84,23 @@ pixelateButton.addEventListener("click", () => {
                     const cr = currentColor.r;
                     const cg = currentColor.g;
                     const cb = currentColor.b;
-                    const colorDist = Math.sqrt((pr - cr) ** 2 + (pg - cg) ** 2 + (pb - cb) ** 2);
+                    const redDiff = cr - pr;
+                    const greenDiff = cg - pg;
+                    const blueDiff = cb - pb;
+                    const redComp = (cr + pr) * 0.5;
+                    const colorDist = Math.sqrt((2 + redComp / 256) * redDiff * redDiff +
+                        4 * greenDiff * greenDiff +
+                        (2 + ((255 - redDiff) / 256)) * blueDiff * blueDiff);
                     if (colorDist < MAX_COLOR_DIST) {
-                        palette[i].r = (pr + cr) * 0.5;
-                        palette[i].g = (pg + cg) * 0.5;
-                        palette[i].b = (pb + cb) * 0.5;
+                        thereIsSimilarColor = true;
                         break;
                     }
                     else {
-                        palette.push(currentColor);
+                        thereIsSimilarColor = false;
                     }
+                }
+                if (!thereIsSimilarColor) {
+                    palette.push(currentColor);
                 }
             }
             resultContext.save();
