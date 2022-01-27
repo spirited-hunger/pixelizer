@@ -1,7 +1,7 @@
 const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
 const PIXEL_SIZE = 20;
-const MAX_COLOR_DIST = 90;
+const MAX_COLOR_DIST = 80;
 class Color {
     constructor(r, g, b) {
         this.r = r;
@@ -51,11 +51,14 @@ pixelateButton.addEventListener("click", () => {
         const pixelNumCol = Math.floor(imageWidth / pixelSize);
         const pixelNumRow = Math.floor(imageHeight / pixelSize);
         const pixNum = pixelNumCol * pixelNumRow;
+        const pixMatrix = [];
+        for (let i = 0; i < pixelNumRow; i++) {
+            pixMatrix.push([]);
+        }
+        console.log(pixMatrix);
         pixCanvas.width = pixelNumCol;
         pixCanvas.height = pixelNumRow;
         pixContext.drawImage(imgCanvas, 0, 0, pixelNumCol, pixelNumRow);
-        resultCanvas.style.width = `${imgCanvas.width}px`;
-        resultCanvas.style.height = `${imgCanvas.height}px`;
         resultContext.width = imgCanvas.width;
         resultContext.height = imgCanvas.height;
         resultContext.fillStyle = "black";
@@ -77,10 +80,11 @@ pixelateButton.addEventListener("click", () => {
             else {
                 const paletteLength = palette.length;
                 let thereIsSimilarColor = false;
-                for (let i = 0; i < paletteLength; i++) {
-                    const pr = palette[i].r;
-                    const pg = palette[i].g;
-                    const pb = palette[i].b;
+                let similarColorIdx = 0;
+                for (let j = 0; j < paletteLength; j++) {
+                    const pr = palette[j].r;
+                    const pg = palette[j].g;
+                    const pb = palette[j].b;
                     const cr = currentColor.r;
                     const cg = currentColor.g;
                     const cb = currentColor.b;
@@ -93,6 +97,7 @@ pixelateButton.addEventListener("click", () => {
                         (2 + ((255 - redDiff) / 256)) * blueDiff * blueDiff);
                     if (colorDist < MAX_COLOR_DIST) {
                         thereIsSimilarColor = true;
+                        similarColorIdx = j;
                         break;
                     }
                     else {
@@ -101,6 +106,10 @@ pixelateButton.addEventListener("click", () => {
                 }
                 if (!thereIsSimilarColor) {
                     palette.push(currentColor);
+                    pixMatrix[row].push(palette.length);
+                }
+                else {
+                    pixMatrix[row].push(similarColorIdx);
                 }
             }
             resultContext.save();

@@ -44,7 +44,7 @@ const CANVAS_MAX_HEIGHT : number = 1080;
 
 const PIXEL_SIZE : number = 20;
 
-const MAX_COLOR_DIST : number = 90;
+const MAX_COLOR_DIST : number = 80;
 
 class Color {
   rgbString: string;
@@ -138,17 +138,24 @@ pixelateButton.addEventListener("click", () => {
     const pixelNumRow: number = Math.floor(imageHeight / pixelSize);
     const pixNum: number = pixelNumCol * pixelNumRow;
 
+    // creating an empty 2d matrix
+    const pixMatrix : number[][] = [];
+
+    for (let i = 0; i < pixelNumRow; i ++) {
+      pixMatrix.push([]);
+    }
+    console.log(pixMatrix)
+
+    // draw image on canvas
     pixCanvas.width = pixelNumCol;
     pixCanvas.height = pixelNumRow;
     
     pixContext.drawImage(imgCanvas, 0, 0, pixelNumCol, pixelNumRow);
 
-    // deleting image with black
-    resultCanvas.style.width = `${imgCanvas.width}px`;
-    resultCanvas.style.height = `${imgCanvas.height}px`;
     resultContext.width = imgCanvas.width;
     resultContext.height = imgCanvas.height;
 
+    // background of the result
     resultContext.fillStyle = "black";
     resultContext.fillRect(0, 0, imgCanvas.width, imgCanvas.height);
     imgArea.appendChild(resultCanvas);
@@ -156,7 +163,7 @@ pixelateButton.addEventListener("click", () => {
     /* getting pixelated data */
     const pixData = pixContext.getImageData(0, 0, pixelNumCol, pixelNumRow).data;
 
-    // 비슷한 색깔 골라 팔레트 만들기
+    // 비슷한 색깔 골라 팔레트, 2차원 배열 만들기
     for (let pixel = 0; pixel < pixNum; pixel++) {
       const col = pixel % pixelNumCol;
       const row = Math.floor(pixel / pixelNumCol);
@@ -175,17 +182,18 @@ pixelateButton.addEventListener("click", () => {
       let currentColor = new Color(r, g, b);
       
       // adding color in the palette if new
-      // if it's a first color
+      // if it's the first color
       if (palette.length === 0) {
         palette.push(currentColor);
       } else {
         const paletteLength = palette.length;
         let thereIsSimilarColor : boolean = false;
+        let similarColorIdx : number = 0;
 
-        for (let i = 0; i < paletteLength; i ++) {
-          const pr = palette[i].r;
-          const pg = palette[i].g;
-          const pb = palette[i].b;
+        for (let j = 0; j < paletteLength; j ++) {
+          const pr = palette[j].r;
+          const pg = palette[j].g;
+          const pb = palette[j].b;
 
           const cr = currentColor.r;
           const cg = currentColor.g;
@@ -200,6 +208,7 @@ pixelateButton.addEventListener("click", () => {
 
           /*
             a low-cost approximation algoritm getting color distance from rgb values 
+            ! this is closer to the human perception of colors
             https://www.compuphase.com/cmetric.htm 
           */
           const redComp = (cr + pr) * 0.5;
@@ -214,14 +223,20 @@ pixelateButton.addEventListener("click", () => {
             // palette[i].g = (pg + cg) * 0.5;
             // palette[i].b = (pb + cb) * 0.5;
             thereIsSimilarColor = true;
+            similarColorIdx = j;
             break;
           } else {
             thereIsSimilarColor = false;
           }
         }
         if (!thereIsSimilarColor) {
+          // there is no similar color
           palette.push(currentColor);
+          pixMatrix[row].push(palette.length);
+        } else {
+          pixMatrix[row].push(similarColorIdx);
         }
+        // TODO : 팔레트 뽑아냈으니 이제 거기에 맞는 2차원배열 생성해서 각 자리마다 팔레트 넘버 부여해주기
       }
 
       resultContext.save();
@@ -239,6 +254,8 @@ pixelateButton.addEventListener("click", () => {
 
       imgContext.restore();
     }
+
+
   }
   showPalette();
 });
