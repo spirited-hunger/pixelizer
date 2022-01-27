@@ -109,15 +109,11 @@ pixelateButton.addEventListener("click", () => {
                 else {
                     pixMatrix[row].push(similarColorIdx);
                 }
-            }
-        }
-        for (let row = 0; row < pixMatrix.length; row++) {
-            for (let col = 0; col < pixMatrix[row].length; col++) {
                 const x = col * pixelSize;
                 const y = row * pixelSize;
                 resultContext.save();
                 resultContext.translate(x, y);
-                resultContext.fillStyle = palette[pixMatrix[row][col]].rgbString;
+                resultContext.fillStyle = currentColor.rgbString;
                 resultContext.fillRect(0, 0, pixelSize, pixelSize);
                 imgContext.restore();
             }
