@@ -1,7 +1,7 @@
 const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
 const PIXEL_SIZE = 10;
-const MAX_COLOR_DIST = 80;
+const MAX_COLOR_DIST = 100;
 class Color {
     constructor(r, g, b) {
         this.r = r;
@@ -55,7 +55,6 @@ pixelateButton.addEventListener("click", () => {
         for (let i = 0; i < pixelNumRow; i++) {
             pixMatrix.push([]);
         }
-        console.log(pixMatrix);
         pixCanvas.width = pixelNumCol;
         pixCanvas.height = pixelNumRow;
         pixContext.drawImage(imgCanvas, 0, 0, pixelNumCol, pixelNumRow);
@@ -109,11 +108,16 @@ pixelateButton.addEventListener("click", () => {
                 else {
                     pixMatrix[row].push(similarColorIdx);
                 }
+                imgContext.restore();
+            }
+        }
+        for (let row = 0; row < pixMatrix.length; row++) {
+            for (let col = 0; col < pixMatrix[row].length; col++) {
                 const x = col * pixelSize;
                 const y = row * pixelSize;
                 resultContext.save();
                 resultContext.translate(x, y);
-                resultContext.fillStyle = currentColor.rgbString;
+                resultContext.fillStyle = palette[pixMatrix[row][col]].rgbString;
                 resultContext.fillRect(0, 0, pixelSize, pixelSize);
                 imgContext.restore();
             }
