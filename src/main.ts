@@ -44,7 +44,7 @@ const CANVAS_MAX_HEIGHT : number = 1080;
 
 const PIXEL_SIZE : number = 10;
 
-const MAX_COLOR_DIST : number = 100;
+const MAX_COLOR_DIST : number = 65;
 
 class Color {
   rgbString: string;
@@ -278,6 +278,7 @@ pixelateButton.addEventListener("click", () => {
     }
   }
   showPalette();
+  console.log(palette)
 });
 
 // function to 
