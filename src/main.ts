@@ -42,9 +42,9 @@
 const CANVAS_MAX_WIDTH : number = 1080;
 const CANVAS_MAX_HEIGHT : number = 1080;
 
-const PIXEL_SIZE : number = 20;
+const PIXEL_SIZE : number = 10;
 
-const MAX_COLOR_DIST : number = 80;
+const MAX_COLOR_DIST : number = 65;
 
 class Color {
   rgbString: string;
@@ -144,7 +144,7 @@ pixelateButton.addEventListener("click", () => {
     for (let i = 0; i < pixelNumRow; i ++) {
       pixMatrix.push([]);
     }
-    console.log(pixMatrix)
+    // console.log(pixMatrix)
 
     // draw image on canvas
     pixCanvas.width = pixelNumCol;
@@ -167,9 +167,6 @@ pixelateButton.addEventListener("click", () => {
     for (let pixel = 0; pixel < pixNum; pixel++) {
       const col = pixel % pixelNumCol;
       const row = Math.floor(pixel / pixelNumCol);
-      
-      const x = col * pixelSize;
-      const y = row * pixelSize;
 
       const r = pixData[pixel * 4 + 0];
       const g = pixData[pixel * 4 + 1];
@@ -232,32 +229,56 @@ pixelateButton.addEventListener("click", () => {
         if (!thereIsSimilarColor) {
           // there is no similar color
           palette.push(currentColor);
-          pixMatrix[row].push(palette.length);
+          pixMatrix[row].push(palette.length - 1);
         } else {
           pixMatrix[row].push(similarColorIdx);
         }
-        // TODO : 팔레트 뽑아냈으니 이제 거기에 맞는 2차원배열 생성해서 각 자리마다 팔레트 넘버 부여해주기
+
+        // const x = col * pixelSize;
+        // const y = row * pixelSize;
+  
+        // resultContext.save();
+        // resultContext.translate(x, y);
+        // resultContext.fillStyle = currentColor.rgbString;
+        
+        // // ? Rectangle pixels
+        // resultContext.fillRect(0, 0, pixelSize, pixelSize);
+  
+        // // ? Circle pixels
+        // // resultContext.translate(pixelSize * 0.5, pixelSize * 0.5);
+        // // resultContext.beginPath();
+        // // resultContext.arc(0, 0, pixelSize * 0.5, 0, Math.PI * 2);
+        // // resultContext.fill();
+  
+        imgContext.restore();
       }
-
-      resultContext.save();
-      resultContext.translate(x, y);
-      resultContext.fillStyle = currentColor.rgbString;
-      
-      // ? Rectangle pixels
-      resultContext.fillRect(0, 0, pixelSize, pixelSize);
-
-      // ? Circle pixels
-      // resultContext.translate(pixelSize * 0.5, pixelSize * 0.5);
-      // resultContext.beginPath();
-      // resultContext.arc(0, 0, pixelSize * 0.5, 0, Math.PI * 2);
-      // resultContext.fill();
-
-      imgContext.restore();
     }
+    // TODO : 팔레트 뽑아냈으니 이제 다시 픽셀 순회하면서 각 자리에 맞는 색깔 넣어주기
 
-
+    for (let row = 0; row < pixMatrix.length; row++) {
+      for (let col = 0; col < pixMatrix[row].length; col++) {
+        const x = col * pixelSize;
+        const y = row * pixelSize;
+  
+        resultContext.save();
+        resultContext.translate(x, y);
+        resultContext.fillStyle = palette[pixMatrix[row][col]].rgbString;
+        
+        // ? Rectangle pixels
+        resultContext.fillRect(0, 0, pixelSize, pixelSize);
+  
+        // ? Circle pixels
+        // resultContext.translate(pixelSize * 0.5, pixelSize * 0.5);
+        // resultContext.beginPath();
+        // resultContext.arc(0, 0, pixelSize * 0.5, 0, Math.PI * 2);
+        // resultContext.fill();
+  
+        imgContext.restore();
+      }
+    }
   }
   showPalette();
+  console.log(palette)
 });
 
 // function to 

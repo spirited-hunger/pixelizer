@@ -1,7 +1,7 @@
 const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
-const PIXEL_SIZE = 20;
-const MAX_COLOR_DIST = 80;
+const PIXEL_SIZE = 10;
+const MAX_COLOR_DIST = 65;
 class Color {
     constructor(r, g, b) {
         this.r = r;
@@ -55,7 +55,6 @@ pixelateButton.addEventListener("click", () => {
         for (let i = 0; i < pixelNumRow; i++) {
             pixMatrix.push([]);
         }
-        console.log(pixMatrix);
         pixCanvas.width = pixelNumCol;
         pixCanvas.height = pixelNumRow;
         pixContext.drawImage(imgCanvas, 0, 0, pixelNumCol, pixelNumRow);
@@ -68,8 +67,6 @@ pixelateButton.addEventListener("click", () => {
         for (let pixel = 0; pixel < pixNum; pixel++) {
             const col = pixel % pixelNumCol;
             const row = Math.floor(pixel / pixelNumCol);
-            const x = col * pixelSize;
-            const y = row * pixelSize;
             const r = pixData[pixel * 4 + 0];
             const g = pixData[pixel * 4 + 1];
             const b = pixData[pixel * 4 + 2];
@@ -106,20 +103,28 @@ pixelateButton.addEventListener("click", () => {
                 }
                 if (!thereIsSimilarColor) {
                     palette.push(currentColor);
-                    pixMatrix[row].push(palette.length);
+                    pixMatrix[row].push(palette.length - 1);
                 }
                 else {
                     pixMatrix[row].push(similarColorIdx);
                 }
+                imgContext.restore();
             }
-            resultContext.save();
-            resultContext.translate(x, y);
-            resultContext.fillStyle = currentColor.rgbString;
-            resultContext.fillRect(0, 0, pixelSize, pixelSize);
-            imgContext.restore();
+        }
+        for (let row = 0; row < pixMatrix.length; row++) {
+            for (let col = 0; col < pixMatrix[row].length; col++) {
+                const x = col * pixelSize;
+                const y = row * pixelSize;
+                resultContext.save();
+                resultContext.translate(x, y);
+                resultContext.fillStyle = palette[pixMatrix[row][col]].rgbString;
+                resultContext.fillRect(0, 0, pixelSize, pixelSize);
+                imgContext.restore();
+            }
         }
     }
     showPalette();
+    console.log(palette);
 });
 const showFile = () => {
     let fileType = imgFile.type;
