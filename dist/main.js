@@ -1,7 +1,7 @@
 const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
 const PIXEL_SIZE = 10;
-const MAX_COLOR_DIST = 100;
+const MAX_COLOR_DIST = 65;
 class Color {
     constructor(r, g, b) {
         this.r = r;
@@ -124,6 +124,7 @@ pixelateButton.addEventListener("click", () => {
         }
     }
     showPalette();
+    console.log(palette);
 });
 const showFile = () => {
     let fileType = imgFile.type;
