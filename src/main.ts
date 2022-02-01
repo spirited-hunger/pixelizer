@@ -44,7 +44,7 @@ const CANVAS_MAX_HEIGHT : number = 1080;
 
 const PIXEL_SIZE : number = 10;
 
-const MAX_COLOR_DIST : number = 65;
+const MAX_COLOR_DIST : number = 40;
 
 class Color {
   rgbString: string;
@@ -57,7 +57,18 @@ class Color {
   }
 };
 
-let palette : Color[] = []; // ! why?
+class PaletteColor extends Color {
+  constructor (
+    public r: number,
+    public g: number,
+    public b: number,
+    public index: number
+  ) {
+    super(r, g, b);
+  }
+}
+
+let palette : PaletteColor[] = [];
 
 let imageWidth: number;
 let imageHeight: number;
@@ -144,7 +155,6 @@ pixelateButton.addEventListener("click", () => {
     for (let i = 0; i < pixelNumRow; i ++) {
       pixMatrix.push([]);
     }
-    // console.log(pixMatrix)
 
     // draw image on canvas
     pixCanvas.width = pixelNumCol;
@@ -181,7 +191,13 @@ pixelateButton.addEventListener("click", () => {
       // adding color in the palette if new
       // if it's the first color
       if (palette.length === 0) {
-        palette.push(currentColor);
+        const newPaletteColor = new PaletteColor(
+          currentColor.r,
+          currentColor.g,
+          currentColor.b,
+          palette.length
+        )
+        palette.push(newPaletteColor);
       } else {
         const paletteLength = palette.length;
         let thereIsSimilarColor : boolean = false;
@@ -216,9 +232,6 @@ pixelateButton.addEventListener("click", () => {
           );
 
           if (colorDist < MAX_COLOR_DIST) {
-            // palette[i].r = (pr + cr) * 0.5;
-            // palette[i].g = (pg + cg) * 0.5;
-            // palette[i].b = (pb + cb) * 0.5;
             thereIsSimilarColor = true;
             similarColorIdx = j;
             break;
@@ -228,31 +241,86 @@ pixelateButton.addEventListener("click", () => {
         }
         if (!thereIsSimilarColor) {
           // there is no similar color
-          palette.push(currentColor);
+          const newPaletteColor = new PaletteColor(
+            currentColor.r,
+            currentColor.g,
+            currentColor.b,
+            palette.length
+          )
+          palette.push(newPaletteColor);
           pixMatrix[row].push(palette.length - 1);
         } else {
+          // there is a similar color
           pixMatrix[row].push(similarColorIdx);
         }
-
-        // const x = col * pixelSize;
-        // const y = row * pixelSize;
-  
-        // resultContext.save();
-        // resultContext.translate(x, y);
-        // resultContext.fillStyle = currentColor.rgbString;
-        
-        // // ? Rectangle pixels
-        // resultContext.fillRect(0, 0, pixelSize, pixelSize);
-  
-        // // ? Circle pixels
-        // // resultContext.translate(pixelSize * 0.5, pixelSize * 0.5);
-        // // resultContext.beginPath();
-        // // resultContext.arc(0, 0, pixelSize * 0.5, 0, Math.PI * 2);
-        // // resultContext.fill();
-  
         imgContext.restore();
       }
     }
+
+    // TODO : 팔레트 뽑아냈으니 이제 팔레트의 색깔 조정
+    for (let i = 0; i < palette.length; i ++) {
+      /* 
+        우선 흰색, 검은색과 가까운 경우 (거의)흰, 검은색으로 변경
+        현재 컬러가 밝은 색인경우 따뜻하게 하고,
+        어두운 색인 경우 둘중에 차갑게 만들기 
+      */
+
+      // 현재 팔레트 컬러
+      let pr = palette[i].r;
+      let pg = palette[i].g;
+      let pb = palette[i].b;
+
+      const pBrightness = Math.floor( // 0 ~ 254 value range
+        Math.sqrt(
+          (pr * pr) * 0.299 +
+          (pg * pg) * 0.587 +
+          (pb * pb) * 0.114
+        )
+      );
+
+      if (pBrightness > 241) {
+        // 흰색과 가까운 색
+        pr = 241;
+        pg = 241;
+        pb = 241;
+
+      } else if (pBrightness < 15) {
+        // 검은색과 가까운 색
+        pr = 30;
+        pg = 31;
+        pb = 33;
+
+      } else if (pBrightness < 127) {
+        // 검은색과 가깝진 않고 어두운색
+        // 15 인 경우 => gb값 곱하기 1.5
+        // 126 인 경우 => gb값 곱하기 1
+        // 연립방정식 y = -1/222x + 348/222 
+        // 약 y = -0.005x + 1.57
+
+        pg = pg * (-0.005 * pBrightness + 1.57);
+        pb = pb * (-0.005 * pBrightness + 1.57);
+      } else if (pBrightness >= 127) {
+        // 흰색과 가깝진 않고 밝은색
+        // 241 인 경우 => r값 곱하기 1.5
+        // 127 인 경우 => r값 곱하기 1
+        // 연립방정식 y = 1/228x + 127/228 
+        // 약 y = 0.004x + 1.56
+
+        pr = pr * (0.004 * pBrightness + 1.56);
+      }
+
+      /*       
+        밝기값이 낮을(어두울)수록 gb 값이 높아야함
+        밝기값이 높을(밝을)수록 r 값이 높아야함 
+      */
+
+      palette[i].r = pr;
+      palette[i].g = pg;
+      palette[i].b = pb;
+      palette[i].rgbString = `rgb(${pr}, ${pg}, ${pb})`;
+    
+    }
+
     // TODO : 팔레트 뽑아냈으니 이제 다시 픽셀 순회하면서 각 자리에 맞는 색깔 넣어주기
 
     for (let row = 0; row < pixMatrix.length; row++) {
@@ -365,8 +433,10 @@ const showUploadMsg = () : void => {
 const showPalette = async () : Promise<void> => {
   const calculate = await import("./functions/calculate.js");
   
+  const sortedPalette = palette.slice(0);
+
   // sort by brightness
-  palette.sort((c1: Color, c2: Color) => {
+  sortedPalette.sort((c1: Color, c2: Color) => {
     const c1Brightness = calculate.relativeBrightness(c1.r, c1.g, c1.b);
     const c2Brightness = calculate.relativeBrightness(c2.r, c2.g, c2.b);
     return c2Brightness - c1Brightness;
@@ -375,8 +445,12 @@ const showPalette = async () : Promise<void> => {
   for (let i = 0; i < palette.length; i++) {
     const paletteItem = document.createElement('div');
     paletteItem.classList.add("item");
-    paletteItem.style.background = palette[i].rgbString;
+    paletteItem.style.background = sortedPalette[i].rgbString;
     paletteArea.appendChild(paletteItem);
+
+    paletteItem.addEventListener('click', () => {
+
+    })
   }
 };
 
@@ -387,6 +461,5 @@ const activatePixelate = (color: string) : void => {
   document.body.style.background = color;
   pixelateButton.style.background = color;
 };
-
 // 모듈임을 알려준다.
 export {};
