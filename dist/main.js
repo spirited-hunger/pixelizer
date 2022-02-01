@@ -1,7 +1,7 @@
 const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
 const PIXEL_SIZE = 10;
-const MAX_COLOR_DIST = 65;
+const MAX_COLOR_DIST = 40;
 class Color {
     constructor(r, g, b) {
         this.r = r;
@@ -11,6 +11,15 @@ class Color {
     }
 }
 ;
+class PaletteColor extends Color {
+    constructor(r, g, b, index) {
+        super(r, g, b);
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.index = index;
+    }
+}
 let palette = [];
 let imageWidth;
 let imageHeight;
@@ -72,7 +81,8 @@ pixelateButton.addEventListener("click", () => {
             const b = pixData[pixel * 4 + 2];
             let currentColor = new Color(r, g, b);
             if (palette.length === 0) {
-                palette.push(currentColor);
+                const newPaletteColor = new PaletteColor(currentColor.r, currentColor.g, currentColor.b, palette.length);
+                palette.push(newPaletteColor);
             }
             else {
                 const paletteLength = palette.length;
@@ -102,7 +112,8 @@ pixelateButton.addEventListener("click", () => {
                     }
                 }
                 if (!thereIsSimilarColor) {
-                    palette.push(currentColor);
+                    const newPaletteColor = new PaletteColor(currentColor.r, currentColor.g, currentColor.b, palette.length);
+                    palette.push(newPaletteColor);
                     pixMatrix[row].push(palette.length - 1);
                 }
                 else {
@@ -110,6 +121,35 @@ pixelateButton.addEventListener("click", () => {
                 }
                 imgContext.restore();
             }
+        }
+        for (let i = 0; i < palette.length; i++) {
+            let pr = palette[i].r;
+            let pg = palette[i].g;
+            let pb = palette[i].b;
+            const pBrightness = Math.floor(Math.sqrt((pr * pr) * 0.299 +
+                (pg * pg) * 0.587 +
+                (pb * pb) * 0.114));
+            if (pBrightness > 241) {
+                pr = 241;
+                pg = 241;
+                pb = 241;
+            }
+            else if (pBrightness < 15) {
+                pr = 30;
+                pg = 31;
+                pb = 33;
+            }
+            else if (pBrightness < 127) {
+                pg = pg * (-0.005 * pBrightness + 1.57);
+                pb = pb * (-0.005 * pBrightness + 1.57);
+            }
+            else if (pBrightness >= 127) {
+                pr = pr * (0.004 * pBrightness + 1.56);
+            }
+            palette[i].r = pr;
+            palette[i].g = pg;
+            palette[i].b = pb;
+            palette[i].rgbString = `rgb(${pr}, ${pg}, ${pb})`;
         }
         for (let row = 0; row < pixMatrix.length; row++) {
             for (let col = 0; col < pixMatrix[row].length; col++) {
@@ -176,7 +216,8 @@ const showUploadMsg = () => {
 };
 const showPalette = async () => {
     const calculate = await import("./functions/calculate.js");
-    palette.sort((c1, c2) => {
+    const sortedPalette = palette.slice(0);
+    sortedPalette.sort((c1, c2) => {
         const c1Brightness = calculate.relativeBrightness(c1.r, c1.g, c1.b);
         const c2Brightness = calculate.relativeBrightness(c2.r, c2.g, c2.b);
         return c2Brightness - c1Brightness;
@@ -184,8 +225,10 @@ const showPalette = async () => {
     for (let i = 0; i < palette.length; i++) {
         const paletteItem = document.createElement('div');
         paletteItem.classList.add("item");
-        paletteItem.style.background = palette[i].rgbString;
+        paletteItem.style.background = sortedPalette[i].rgbString;
         paletteArea.appendChild(paletteItem);
+        paletteItem.addEventListener('click', () => {
+        });
     }
 };
 const activatePixelate = (color) => {
