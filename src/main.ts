@@ -44,7 +44,7 @@ const CANVAS_MAX_HEIGHT : number = 1080;
 
 const PIXEL_SIZE : number = 10;
 
-const MAX_COLOR_DIST : number = 40;
+const MAX_COLOR_DIST : number = 50;
 
 class Color {
   rgbString: string;
@@ -255,70 +255,6 @@ pixelateButton.addEventListener("click", () => {
         }
         imgContext.restore();
       }
-    }
-
-    // TODO : 팔레트 뽑아냈으니 이제 팔레트의 색깔 조정
-    for (let i = 0; i < palette.length; i ++) {
-      /* 
-        우선 흰색, 검은색과 가까운 경우 (거의)흰, 검은색으로 변경
-        현재 컬러가 밝은 색인경우 따뜻하게 하고,
-        어두운 색인 경우 둘중에 차갑게 만들기 
-      */
-
-      // 현재 팔레트 컬러
-      let pr = palette[i].r;
-      let pg = palette[i].g;
-      let pb = palette[i].b;
-
-      const pBrightness = Math.floor( // 0 ~ 254 value range
-        Math.sqrt(
-          (pr * pr) * 0.299 +
-          (pg * pg) * 0.587 +
-          (pb * pb) * 0.114
-        )
-      );
-
-      if (pBrightness > 241) {
-        // 흰색과 가까운 색
-        pr = 241;
-        pg = 241;
-        pb = 241;
-
-      } else if (pBrightness < 15) {
-        // 검은색과 가까운 색
-        pr = 30;
-        pg = 31;
-        pb = 33;
-
-      } else if (pBrightness < 127) {
-        // 검은색과 가깝진 않고 어두운색
-        // 15 인 경우 => gb값 곱하기 1.5
-        // 126 인 경우 => gb값 곱하기 1
-        // 연립방정식 y = -1/222x + 348/222 
-        // 약 y = -0.005x + 1.57
-
-        pg = pg * (-0.005 * pBrightness + 1.57);
-        pb = pb * (-0.005 * pBrightness + 1.57);
-      } else if (pBrightness >= 127) {
-        // 흰색과 가깝진 않고 밝은색
-        // 241 인 경우 => r값 곱하기 1.5
-        // 127 인 경우 => r값 곱하기 1
-        // 연립방정식 y = 1/228x + 127/228 
-        // 약 y = 0.004x + 1.56
-
-        pr = pr * (0.004 * pBrightness + 1.56);
-      }
-
-      /*       
-        밝기값이 낮을(어두울)수록 gb 값이 높아야함
-        밝기값이 높을(밝을)수록 r 값이 높아야함 
-      */
-
-      palette[i].r = pr;
-      palette[i].g = pg;
-      palette[i].b = pb;
-      palette[i].rgbString = `rgb(${pr}, ${pg}, ${pb})`;
-    
     }
 
     // TODO : 팔레트 뽑아냈으니 이제 다시 픽셀 순회하면서 각 자리에 맞는 색깔 넣어주기
