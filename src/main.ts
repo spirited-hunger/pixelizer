@@ -44,7 +44,7 @@ const CANVAS_MAX_HEIGHT : number = 1080;
 
 const PIXEL_SIZE : number = 10;
 
-const MAX_COLOR_DIST : number = 65;
+const MAX_COLOR_DIST : number = 50;
 
 class Color {
   rgbString: string;
@@ -57,7 +57,18 @@ class Color {
   }
 };
 
-let palette : Color[] = []; // ! why?
+class PaletteColor extends Color {
+  constructor (
+    public r: number,
+    public g: number,
+    public b: number,
+    public index: number
+  ) {
+    super(r, g, b);
+  }
+}
+
+let palette : PaletteColor[] = [];
 
 let imageWidth: number;
 let imageHeight: number;
@@ -144,7 +155,6 @@ pixelateButton.addEventListener("click", () => {
     for (let i = 0; i < pixelNumRow; i ++) {
       pixMatrix.push([]);
     }
-    // console.log(pixMatrix)
 
     // draw image on canvas
     pixCanvas.width = pixelNumCol;
@@ -181,7 +191,13 @@ pixelateButton.addEventListener("click", () => {
       // adding color in the palette if new
       // if it's the first color
       if (palette.length === 0) {
-        palette.push(currentColor);
+        const newPaletteColor = new PaletteColor(
+          currentColor.r,
+          currentColor.g,
+          currentColor.b,
+          palette.length
+        )
+        palette.push(newPaletteColor);
       } else {
         const paletteLength = palette.length;
         let thereIsSimilarColor : boolean = false;
@@ -216,9 +232,6 @@ pixelateButton.addEventListener("click", () => {
           );
 
           if (colorDist < MAX_COLOR_DIST) {
-            // palette[i].r = (pr + cr) * 0.5;
-            // palette[i].g = (pg + cg) * 0.5;
-            // palette[i].b = (pb + cb) * 0.5;
             thereIsSimilarColor = true;
             similarColorIdx = j;
             break;
@@ -228,31 +241,22 @@ pixelateButton.addEventListener("click", () => {
         }
         if (!thereIsSimilarColor) {
           // there is no similar color
-          palette.push(currentColor);
+          const newPaletteColor = new PaletteColor(
+            currentColor.r,
+            currentColor.g,
+            currentColor.b,
+            palette.length
+          )
+          palette.push(newPaletteColor);
           pixMatrix[row].push(palette.length - 1);
         } else {
+          // there is a similar color
           pixMatrix[row].push(similarColorIdx);
         }
-
-        // const x = col * pixelSize;
-        // const y = row * pixelSize;
-  
-        // resultContext.save();
-        // resultContext.translate(x, y);
-        // resultContext.fillStyle = currentColor.rgbString;
-        
-        // // ? Rectangle pixels
-        // resultContext.fillRect(0, 0, pixelSize, pixelSize);
-  
-        // // ? Circle pixels
-        // // resultContext.translate(pixelSize * 0.5, pixelSize * 0.5);
-        // // resultContext.beginPath();
-        // // resultContext.arc(0, 0, pixelSize * 0.5, 0, Math.PI * 2);
-        // // resultContext.fill();
-  
         imgContext.restore();
       }
     }
+
     // TODO : 팔레트 뽑아냈으니 이제 다시 픽셀 순회하면서 각 자리에 맞는 색깔 넣어주기
 
     for (let row = 0; row < pixMatrix.length; row++) {
@@ -365,8 +369,10 @@ const showUploadMsg = () : void => {
 const showPalette = async () : Promise<void> => {
   const calculate = await import("./functions/calculate.js");
   
+  const sortedPalette = palette.slice(0);
+
   // sort by brightness
-  palette.sort((c1: Color, c2: Color) => {
+  sortedPalette.sort((c1: Color, c2: Color) => {
     const c1Brightness = calculate.relativeBrightness(c1.r, c1.g, c1.b);
     const c2Brightness = calculate.relativeBrightness(c2.r, c2.g, c2.b);
     return c2Brightness - c1Brightness;
@@ -375,8 +381,12 @@ const showPalette = async () : Promise<void> => {
   for (let i = 0; i < palette.length; i++) {
     const paletteItem = document.createElement('div');
     paletteItem.classList.add("item");
-    paletteItem.style.background = palette[i].rgbString;
+    paletteItem.style.background = sortedPalette[i].rgbString;
     paletteArea.appendChild(paletteItem);
+
+    paletteItem.addEventListener('click', () => {
+
+    })
   }
 };
 
@@ -387,6 +397,5 @@ const activatePixelate = (color: string) : void => {
   document.body.style.background = color;
   pixelateButton.style.background = color;
 };
-
 // 모듈임을 알려준다.
 export {};
