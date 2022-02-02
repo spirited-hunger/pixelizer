@@ -44,7 +44,7 @@ const CANVAS_MAX_HEIGHT : number = 1080;
 
 const PIXEL_SIZE : number = 10;
 
-const MAX_COLOR_DIST : number = 50;
+const MAX_COLOR_DIST : number = 60;
 
 class Color {
   rgbString: string;
@@ -91,12 +91,18 @@ const imgArea: HTMLElement = document.querySelector(".image-area");
 
 const imgCanvas: HTMLCanvasElement = document.createElement('canvas');
 const imgContext: any = imgCanvas.getContext('2d');
+imgArea.appendChild(imgCanvas);
 
 const pixCanvas: HTMLCanvasElement = document.createElement('canvas');
 const pixContext: any = pixCanvas.getContext('2d');
 
 const resultCanvas: HTMLCanvasElement = document.createElement('canvas');
 const resultContext: any = imgCanvas.getContext('2d');
+imgArea.appendChild(resultCanvas);
+
+const gridCanvas: HTMLCanvasElement = document.createElement('canvas');
+const gridContext: any = imgCanvas.getContext('2d');
+imgArea.appendChild(gridCanvas);
 
 /* palette area */
 const paletteArea: HTMLDivElement = document.querySelector(".palette-area");
@@ -168,7 +174,7 @@ pixelateButton.addEventListener("click", () => {
     // background of the result
     resultContext.fillStyle = "black";
     resultContext.fillRect(0, 0, imgCanvas.width, imgCanvas.height);
-    imgArea.appendChild(resultCanvas);
+    
 
     /* getting pixelated data */
     const pixData = pixContext.getImageData(0, 0, pixelNumCol, pixelNumRow).data;
@@ -309,8 +315,6 @@ const showFile = (
       originalImage.src = imageURL;
 
       originalImage.addEventListener('load', () => {
-        imgArea.appendChild(imgCanvas);
-
         /* adjusting image size to the canvas size */
         imageWidth = originalImage.width;
         imageHeight = originalImage.height;

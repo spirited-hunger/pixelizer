@@ -1,7 +1,7 @@
 const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
 const PIXEL_SIZE = 10;
-const MAX_COLOR_DIST = 50;
+const MAX_COLOR_DIST = 60;
 class Color {
     constructor(r, g, b) {
         this.r = r;
@@ -32,10 +32,15 @@ const input = dropArea.querySelector("input");
 const imgArea = document.querySelector(".image-area");
 const imgCanvas = document.createElement('canvas');
 const imgContext = imgCanvas.getContext('2d');
+imgArea.appendChild(imgCanvas);
 const pixCanvas = document.createElement('canvas');
 const pixContext = pixCanvas.getContext('2d');
 const resultCanvas = document.createElement('canvas');
 const resultContext = imgCanvas.getContext('2d');
+imgArea.appendChild(resultCanvas);
+const gridCanvas = document.createElement('canvas');
+const gridContext = imgCanvas.getContext('2d');
+imgArea.appendChild(gridCanvas);
 const paletteArea = document.querySelector(".palette-area");
 let imgFile;
 browseButton.addEventListener("click", () => {
@@ -71,7 +76,6 @@ pixelateButton.addEventListener("click", () => {
         resultContext.height = imgCanvas.height;
         resultContext.fillStyle = "black";
         resultContext.fillRect(0, 0, imgCanvas.width, imgCanvas.height);
-        imgArea.appendChild(resultCanvas);
         const pixData = pixContext.getImageData(0, 0, pixelNumCol, pixelNumRow).data;
         for (let pixel = 0; pixel < pixNum; pixel++) {
             const col = pixel % pixelNumCol;
@@ -149,7 +153,6 @@ const showFile = () => {
             let imageURL = `${fileReader.result}`;
             originalImage.src = imageURL;
             originalImage.addEventListener('load', () => {
-                imgArea.appendChild(imgCanvas);
                 imageWidth = originalImage.width;
                 imageHeight = originalImage.height;
                 const whRatio = imageWidth / imageHeight;
