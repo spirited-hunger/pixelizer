@@ -42,7 +42,7 @@
 const CANVAS_MAX_WIDTH : number = 1080;
 const CANVAS_MAX_HEIGHT : number = 1080;
 
-const PIXEL_SIZE : number = 10;
+const PIXEL_SIZE : number = 20;
 
 const MAX_COLOR_DIST : number = 60;
 
@@ -97,11 +97,11 @@ const pixCanvas: HTMLCanvasElement = document.createElement('canvas');
 const pixContext: any = pixCanvas.getContext('2d');
 
 const resultCanvas: HTMLCanvasElement = document.createElement('canvas');
-const resultContext: any = imgCanvas.getContext('2d');
+const resultContext: any = resultCanvas.getContext('2d');
 imgArea.appendChild(resultCanvas);
 
 const gridCanvas: HTMLCanvasElement = document.createElement('canvas');
-const gridContext: any = imgCanvas.getContext('2d');
+const gridContext: any = gridCanvas.getContext('2d');
 imgArea.appendChild(gridCanvas);
 
 /* palette area */
@@ -141,6 +141,45 @@ dropArea.addEventListener("drop", (e: any) : void => {
   imgFile = e.dataTransfer.files[0];
   // console.log(imgFile);
   showFile();
+})
+
+/* G R I D */
+gridCanvas.addEventListener("mouseover", () => {
+  if (imageWidth !== undefined && imageHeight !== undefined) {
+    // resizing canvas sizes
+
+    // gridContext.width = 100;
+    // gridContext.height = 100;
+    console.log(`image W : ${gridContext.width}`)
+    console.log(`image H : ${gridContext.height}`)
+
+    gridContext.beginPath(); 
+    for (let x=0;x<=imageWidth;x+=PIXEL_SIZE) {
+            gridContext.moveTo(x, 0);
+            gridContext.lineTo(x, imageHeight);
+    }
+    // set the color of the line
+    gridContext.strokeStyle = 'rgb(255,255,255)';
+    gridContext.lineWidth = 1;
+    // the stroke will actually paint the current path 
+    gridContext.stroke(); 
+    // for the sake of the example 2nd path
+    gridContext.beginPath(); 
+    for (let y=0;y<=imageHeight;y+=PIXEL_SIZE) {
+            gridContext.moveTo(0, y);
+            gridContext.lineTo(imageWidth, y);
+    }
+    // set the color of the line
+    gridContext.strokeStyle = 'rgb(20,20,20)';
+    // just for fun
+    gridContext.lineWidth = 1;
+    // for your original question - you need to stroke only once
+    gridContext.stroke(); 
+  }
+})
+
+gridCanvas.addEventListener("mouseout", () => {
+  gridContext.clearRect(0, 0, imageWidth, imageHeight);
 })
 
 /* P I X A L A T E */
@@ -343,6 +382,9 @@ const showFile = (
         imgCanvas.style.height = `${
           Math.floor(imageHeight * imageCSSWH / CANVAS_MAX_HEIGHT)
         }px`;
+
+        console.log(`imagecanvas style width : ${imgCanvas.style.width}`)
+        console.log(`imagecanvas style height : ${imgCanvas.style.height}`)
 
         /* drawing the image on canvas */        
         imgContext.drawImage(originalImage, 0, 0, imageWidth, imageHeight);
