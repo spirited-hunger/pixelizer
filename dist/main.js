@@ -1,6 +1,6 @@
 const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
-const PIXEL_SIZE = 10;
+const PIXEL_SIZE = 20;
 const MAX_COLOR_DIST = 60;
 class Color {
     constructor(r, g, b) {
@@ -36,10 +36,10 @@ imgArea.appendChild(imgCanvas);
 const pixCanvas = document.createElement('canvas');
 const pixContext = pixCanvas.getContext('2d');
 const resultCanvas = document.createElement('canvas');
-const resultContext = imgCanvas.getContext('2d');
+const resultContext = resultCanvas.getContext('2d');
 imgArea.appendChild(resultCanvas);
 const gridCanvas = document.createElement('canvas');
-const gridContext = imgCanvas.getContext('2d');
+const gridContext = gridCanvas.getContext('2d');
 imgArea.appendChild(gridCanvas);
 const paletteArea = document.querySelector(".palette-area");
 let imgFile;
@@ -57,6 +57,31 @@ dropArea.addEventListener("drop", (e) => {
     e.preventDefault();
     imgFile = e.dataTransfer.files[0];
     showFile();
+});
+gridCanvas.addEventListener("mouseover", () => {
+    if (imageWidth !== undefined && imageHeight !== undefined) {
+        console.log(`image W : ${gridContext.width}`);
+        console.log(`image H : ${gridContext.height}`);
+        gridContext.beginPath();
+        for (let x = 0; x <= imageWidth; x += PIXEL_SIZE) {
+            gridContext.moveTo(x, 0);
+            gridContext.lineTo(x, imageHeight);
+        }
+        gridContext.strokeStyle = 'rgb(255,255,255)';
+        gridContext.lineWidth = 1;
+        gridContext.stroke();
+        gridContext.beginPath();
+        for (let y = 0; y <= imageHeight; y += PIXEL_SIZE) {
+            gridContext.moveTo(0, y);
+            gridContext.lineTo(imageWidth, y);
+        }
+        gridContext.strokeStyle = 'rgb(20,20,20)';
+        gridContext.lineWidth = 1;
+        gridContext.stroke();
+    }
+});
+gridCanvas.addEventListener("mouseout", () => {
+    gridContext.clearRect(0, 0, imageWidth, imageHeight);
 });
 pixelateButton.addEventListener("click", () => {
     if (imageWidth !== undefined && imageHeight !== undefined) {
@@ -169,6 +194,8 @@ const showFile = () => {
                 const imageCSSWH = Number(window.getComputedStyle(imgCanvas).width.split("px")[0]);
                 imgCanvas.style.width = `${Math.floor(imageWidth * imageCSSWH / CANVAS_MAX_WIDTH)}px`;
                 imgCanvas.style.height = `${Math.floor(imageHeight * imageCSSWH / CANVAS_MAX_HEIGHT)}px`;
+                console.log(`imagecanvas style width : ${imgCanvas.style.width}`);
+                console.log(`imagecanvas style height : ${imgCanvas.style.height}`);
                 imgContext.drawImage(originalImage, 0, 0, imageWidth, imageHeight);
                 dropArea.classList.add("hidden");
             });
