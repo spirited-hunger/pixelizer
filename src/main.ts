@@ -189,9 +189,29 @@ pixelateButton.addEventListener("click", () => {
     console.log("pix!");
 
     const pixelSize: number = PIXEL_SIZE;
+    // TODO : only valid values e.g. 6, 9, 10, 12, ...
     const pixelNumCol: number = Math.floor(imageWidth / pixelSize);
     const pixelNumRow: number = Math.floor(imageHeight / pixelSize);
     const pixNum: number = pixelNumCol * pixelNumRow;
+
+    // TODO : resizing function & show current picture size
+    /* 
+    임의로 픽셀 크기를 정했을때 자투리 부분이 남는걸 방지하기위해 아예 리사이즈를 조금 해버리는게 어떨까?
+
+    pixel size 180 => 6 * ? pixels
+    pixel size 90 => 12  * ? pixels
+    pixel size 45 => 24 * ? pixels
+    pixel size 30 => 36 * ? pixels
+    pixel size 24 => 45 * ? pixels
+    pixel size 20 => 54 * ? pixels
+    pixel size 15 => 72 * ? pixels
+    pixel size 12 => 90 * ? pixels
+    pixel size 10 => 108 * ? pixels
+    pixel size 9 => 120  * ? pixels
+    pixel size 6 => 180 * ? pixels
+
+    이정도 크기들로 ㅇㅋ
+    */
 
     // creating an empty 2d matrix
     const pixMatrix: number[][] = [];
