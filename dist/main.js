@@ -10,7 +10,6 @@ class Color {
         this.rgbString = `rgb(${r}, ${g}, ${b})`;
     }
 }
-;
 class PaletteColor extends Color {
     constructor(r, g, b, index) {
         super(r, g, b);
@@ -30,16 +29,16 @@ const browseButton = dropArea.querySelector(".browseButton");
 const pixelateButton = document.querySelector(".pixelateButton");
 const input = dropArea.querySelector("input");
 const imgArea = document.querySelector(".image-area");
-const imgCanvas = document.createElement('canvas');
-const imgContext = imgCanvas.getContext('2d');
+const imgCanvas = document.createElement("canvas");
+const imgContext = imgCanvas.getContext("2d");
 imgArea.appendChild(imgCanvas);
-const pixCanvas = document.createElement('canvas');
-const pixContext = pixCanvas.getContext('2d');
-const resultCanvas = document.createElement('canvas');
-const resultContext = resultCanvas.getContext('2d');
+const pixCanvas = document.createElement("canvas");
+const pixContext = pixCanvas.getContext("2d");
+const resultCanvas = document.createElement("canvas");
+const resultContext = resultCanvas.getContext("2d");
 imgArea.appendChild(resultCanvas);
-const gridCanvas = document.createElement('canvas');
-const gridContext = gridCanvas.getContext('2d');
+const gridCanvas = document.createElement("canvas");
+const gridContext = gridCanvas.getContext("2d");
 imgArea.appendChild(gridCanvas);
 const paletteArea = document.querySelector(".palette-area");
 let imgFile;
@@ -60,14 +59,14 @@ dropArea.addEventListener("drop", (e) => {
 });
 gridCanvas.addEventListener("mouseover", () => {
     if (imageWidth !== undefined && imageHeight !== undefined) {
-        console.log(`image W : ${gridContext.width}`);
-        console.log(`image H : ${gridContext.height}`);
+        gridCanvas.width = imageWidth;
+        gridCanvas.height = imageHeight;
         gridContext.beginPath();
         for (let x = 0; x <= imageWidth; x += PIXEL_SIZE) {
             gridContext.moveTo(x, 0);
             gridContext.lineTo(x, imageHeight);
         }
-        gridContext.strokeStyle = 'rgb(255,255,255)';
+        gridContext.strokeStyle = "rgb(20,20,20)";
         gridContext.lineWidth = 1;
         gridContext.stroke();
         gridContext.beginPath();
@@ -75,7 +74,7 @@ gridCanvas.addEventListener("mouseover", () => {
             gridContext.moveTo(0, y);
             gridContext.lineTo(imageWidth, y);
         }
-        gridContext.strokeStyle = 'rgb(20,20,20)';
+        gridContext.strokeStyle = "rgb(20,20,20)";
         gridContext.lineWidth = 1;
         gridContext.stroke();
     }
@@ -97,9 +96,9 @@ pixelateButton.addEventListener("click", () => {
         pixCanvas.width = pixelNumCol;
         pixCanvas.height = pixelNumRow;
         pixContext.drawImage(imgCanvas, 0, 0, pixelNumCol, pixelNumRow);
-        resultContext.width = imgCanvas.width;
-        resultContext.height = imgCanvas.height;
-        resultContext.fillStyle = "black";
+        resultCanvas.width = imageWidth;
+        resultCanvas.height = imageHeight;
+        resultContext.fillStyle = "red";
         resultContext.fillRect(0, 0, imgCanvas.width, imgCanvas.height);
         const pixData = pixContext.getImageData(0, 0, pixelNumCol, pixelNumRow).data;
         for (let pixel = 0; pixel < pixNum; pixel++) {
@@ -130,7 +129,7 @@ pixelateButton.addEventListener("click", () => {
                     const redComp = (cr + pr) * 0.5;
                     const colorDist = Math.sqrt((2 + redComp / 256) * redDiff * redDiff +
                         4 * greenDiff * greenDiff +
-                        (2 + ((255 - redDiff) / 256)) * blueDiff * blueDiff);
+                        (2 + (255 - redDiff) / 256) * blueDiff * blueDiff);
                     if (colorDist < MAX_COLOR_DIST) {
                         thereIsSimilarColor = true;
                         similarColorIdx = j;
@@ -148,7 +147,6 @@ pixelateButton.addEventListener("click", () => {
                 else {
                     pixMatrix[row].push(similarColorIdx);
                 }
-                imgContext.restore();
             }
         }
         for (let row = 0; row < pixMatrix.length; row++) {
@@ -159,7 +157,13 @@ pixelateButton.addEventListener("click", () => {
                 resultContext.translate(x, y);
                 resultContext.fillStyle = palette[pixMatrix[row][col]].rgbString;
                 resultContext.fillRect(0, 0, pixelSize, pixelSize);
-                imgContext.restore();
+                resultContext.restore();
+                if (row === 0 && col === pixMatrix[0].length - 1) {
+                    console.log(`
+            row : ${row} 
+            col : ${col}/${pixMatrix[0].length - 1}
+          `);
+                }
             }
         }
     }
@@ -177,7 +181,7 @@ const showFile = () => {
             activatePixelate(colorFromImage);
             let imageURL = `${fileReader.result}`;
             originalImage.src = imageURL;
-            originalImage.addEventListener('load', () => {
+            originalImage.addEventListener("load", () => {
                 imageWidth = originalImage.width;
                 imageHeight = originalImage.height;
                 const whRatio = imageWidth / imageHeight;
@@ -192,10 +196,12 @@ const showFile = () => {
                 imgCanvas.width = imageWidth;
                 imgCanvas.height = imageHeight;
                 const imageCSSWH = Number(window.getComputedStyle(imgCanvas).width.split("px")[0]);
-                imgCanvas.style.width = `${Math.floor(imageWidth * imageCSSWH / CANVAS_MAX_WIDTH)}px`;
-                imgCanvas.style.height = `${Math.floor(imageHeight * imageCSSWH / CANVAS_MAX_HEIGHT)}px`;
-                console.log(`imagecanvas style width : ${imgCanvas.style.width}`);
-                console.log(`imagecanvas style height : ${imgCanvas.style.height}`);
+                imgCanvas.style.width = `${Math.floor((imageWidth * imageCSSWH) / CANVAS_MAX_WIDTH)}px`;
+                imgCanvas.style.height = `${Math.floor((imageHeight * imageCSSWH) / CANVAS_MAX_HEIGHT)}px`;
+                resultCanvas.style.width = `${Math.floor((imageWidth * imageCSSWH) / CANVAS_MAX_WIDTH)}px`;
+                resultCanvas.style.height = `${Math.floor((imageHeight * imageCSSWH) / CANVAS_MAX_HEIGHT)}px`;
+                gridCanvas.style.width = `${Math.floor((imageWidth * imageCSSWH) / CANVAS_MAX_WIDTH)}px`;
+                gridCanvas.style.height = `${Math.floor((imageHeight * imageCSSWH) / CANVAS_MAX_HEIGHT)}px`;
                 imgContext.drawImage(originalImage, 0, 0, imageWidth, imageHeight);
                 dropArea.classList.add("hidden");
             });
@@ -224,12 +230,11 @@ const showPalette = async () => {
         return c2Brightness - c1Brightness;
     });
     for (let i = 0; i < palette.length; i++) {
-        const paletteItem = document.createElement('div');
+        const paletteItem = document.createElement("div");
         paletteItem.classList.add("item");
         paletteItem.style.background = sortedPalette[i].rgbString;
         paletteArea.appendChild(paletteItem);
-        paletteItem.addEventListener('click', () => {
-        });
+        paletteItem.addEventListener("click", () => { });
     }
 };
 const activatePixelate = (color) => {
