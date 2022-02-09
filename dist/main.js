@@ -98,7 +98,7 @@ pixelateButton.addEventListener("click", () => {
         pixContext.drawImage(imgCanvas, 0, 0, pixelNumCol, pixelNumRow);
         resultCanvas.width = imageWidth;
         resultCanvas.height = imageHeight;
-        resultContext.fillStyle = "red";
+        resultContext.fillStyle = "whitesmoke";
         resultContext.fillRect(0, 0, imgCanvas.width, imgCanvas.height);
         const pixData = pixContext.getImageData(0, 0, pixelNumCol, pixelNumRow).data;
         for (let pixel = 0; pixel < pixNum; pixel++) {
@@ -111,6 +111,7 @@ pixelateButton.addEventListener("click", () => {
             if (palette.length === 0) {
                 const newPaletteColor = new PaletteColor(currentColor.r, currentColor.g, currentColor.b, palette.length);
                 palette.push(newPaletteColor);
+                pixMatrix[row].push(palette.length - 1);
             }
             else {
                 const paletteLength = palette.length;
@@ -158,12 +159,6 @@ pixelateButton.addEventListener("click", () => {
                 resultContext.fillStyle = palette[pixMatrix[row][col]].rgbString;
                 resultContext.fillRect(0, 0, pixelSize, pixelSize);
                 resultContext.restore();
-                if (row === 0 && col === pixMatrix[0].length - 1) {
-                    console.log(`
-            row : ${row} 
-            col : ${col}/${pixMatrix[0].length - 1}
-          `);
-                }
             }
         }
     }
