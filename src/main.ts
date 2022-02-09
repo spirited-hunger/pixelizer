@@ -170,6 +170,10 @@ gridCanvas.addEventListener("mouseover", () => {
     gridContext.lineWidth = 1;
     // for your original question - you need to stroke only once
     gridContext.stroke();
+
+    // show current pixel
+
+
   }
 });
 
@@ -191,7 +195,7 @@ pixelateButton.addEventListener("click", () => {
     const pixelNumRow: number = Math.floor(imageHeight / pixelSize);
     const pixNum: number = pixelNumCol * pixelNumRow;
 
-    // TODO : resizing function & show current picture size
+    // TODO : image resizing function & show current picture size
     /* 
     임의로 픽셀 크기를 정했을때 자투리 부분이 남는걸 방지하기위해 아예 리사이즈를 조금 해버리는게 어떨까?
 
