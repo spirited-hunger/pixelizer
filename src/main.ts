@@ -172,8 +172,6 @@ gridCanvas.addEventListener("mouseover", () => {
     gridContext.stroke();
 
     // show current pixel
-
-
   }
 });
 
@@ -322,7 +320,6 @@ pixelateButton.addEventListener("click", () => {
           // there is a similar color
           pixMatrix[row].push(similarColorIdx);
         }
-        
       }
     }
 
@@ -378,7 +375,6 @@ const showFile = () =>
         originalImage.src = imageURL;
 
         originalImage.addEventListener("load", () => {
-
           /* adjusting image size to the canvas size */
           imageWidth = originalImage.width;
           imageHeight = originalImage.height;
@@ -410,14 +406,12 @@ const showFile = () =>
             (imageHeight * imageCSSWH) / CANVAS_MAX_HEIGHT
           )}px`;
 
-
           resultCanvas.style.width = `${Math.floor(
             (imageWidth * imageCSSWH) / CANVAS_MAX_WIDTH
           )}px`;
           resultCanvas.style.height = `${Math.floor(
             (imageHeight * imageCSSWH) / CANVAS_MAX_HEIGHT
           )}px`;
-
 
           gridCanvas.style.width = `${Math.floor(
             (imageWidth * imageCSSWH) / CANVAS_MAX_WIDTH
