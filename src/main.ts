@@ -170,6 +170,8 @@ gridCanvas.addEventListener("mouseover", () => {
     gridContext.lineWidth = 1;
     // for your original question - you need to stroke only once
     gridContext.stroke();
+
+    // show current pixel
   }
 });
 
@@ -191,7 +193,7 @@ pixelateButton.addEventListener("click", () => {
     const pixelNumRow: number = Math.floor(imageHeight / pixelSize);
     const pixNum: number = pixelNumCol * pixelNumRow;
 
-    // TODO : resizing function & show current picture size
+    // TODO : image resizing function & show current picture size
     /* 
     임의로 픽셀 크기를 정했을때 자투리 부분이 남는걸 방지하기위해 아예 리사이즈를 조금 해버리는게 어떨까?
 
@@ -225,7 +227,7 @@ pixelateButton.addEventListener("click", () => {
     resultCanvas.height = imageHeight;
 
     // background of the result
-    resultContext.fillStyle = "red";
+    resultContext.fillStyle = "whitesmoke";
     resultContext.fillRect(0, 0, imgCanvas.width, imgCanvas.height);
 
     /* getting pixelated data */
@@ -261,6 +263,8 @@ pixelateButton.addEventListener("click", () => {
           palette.length
         );
         palette.push(newPaletteColor);
+
+        pixMatrix[row].push(palette.length - 1);
       } else {
         const paletteLength = palette.length;
         let thereIsSimilarColor: boolean = false;
@@ -316,7 +320,6 @@ pixelateButton.addEventListener("click", () => {
           // there is a similar color
           pixMatrix[row].push(similarColorIdx);
         }
-        
       }
     }
 
@@ -341,14 +344,6 @@ pixelateButton.addEventListener("click", () => {
         // resultContext.fill();
 
         resultContext.restore();
-
-        // TODO : you should fix this hole on the top right pixel of the canvas
-        if(row === 0 && col === pixMatrix[0].length - 1) {
-          console.log(`
-            row : ${row} 
-            col : ${col}/${pixMatrix[0].length - 1}
-          `);
-        }
       }
     }
   }
@@ -380,7 +375,6 @@ const showFile = () =>
         originalImage.src = imageURL;
 
         originalImage.addEventListener("load", () => {
-          
           /* adjusting image size to the canvas size */
           imageWidth = originalImage.width;
           imageHeight = originalImage.height;
@@ -412,14 +406,12 @@ const showFile = () =>
             (imageHeight * imageCSSWH) / CANVAS_MAX_HEIGHT
           )}px`;
 
-
           resultCanvas.style.width = `${Math.floor(
             (imageWidth * imageCSSWH) / CANVAS_MAX_WIDTH
           )}px`;
           resultCanvas.style.height = `${Math.floor(
             (imageHeight * imageCSSWH) / CANVAS_MAX_HEIGHT
           )}px`;
-
 
           gridCanvas.style.width = `${Math.floor(
             (imageWidth * imageCSSWH) / CANVAS_MAX_WIDTH
