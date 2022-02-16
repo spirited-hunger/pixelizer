@@ -1,0 +1,118 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,700");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+html,
+body {
+  display: grid;
+  height: 100%;
+  text-align: center;
+  place-items: center;
+  background: #25213d;
+}
+
+.range {
+  height: 80px;
+  width: 380px;
+  /* background: rgb(163, 163, 163); */
+  border-radius: 10px;
+  padding: 0 65px 0 45px;
+}
+
+.range .sliderValue {
+  position: relative;
+  width: 100%;
+}
+
+.range .sliderValue span {
+  position: absolute;
+  width: 45px;
+  height: 45px;
+  color: #ddd;
+  font-weight: 500;
+  font-size: 20px;
+  top: -40px;
+  transform: translateX(-50%) scale(0);
+  transform-origin: bottom;
+  transition: transform 0.3s ease-in-out;
+  line-height: 55px;
+  z-index: 2;
+}
+
+.range .sliderValue span.show {
+  transform: translateX(-50%) scale(1);
+}
+
+.range .sliderValue span:after {
+  position: absolute;
+  content: "";
+  width: 45px;
+  height: 45px;
+  background: rgb(122, 122, 122);
+  color: #25213d;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  border: 3px solid #ddd;
+  z-index: -1;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  border-bottom-left-radius: 50%;
+}
+
+.range .field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.range .field .value {
+  position: absolute;
+  font-size: 18px;
+  font-weight: 600;
+  color: rgb(122, 122, 122);
+}
+
+.range .field .value.left {
+  left: -22px;
+}
+
+.range .field .value.right {
+  right: -43px;
+}
+
+.range .field input {
+  -webkit-appearance: none;
+  height: 3px;
+  width: 100%;
+  background: rgb(122, 122, 122);
+  border-radius: 5px;
+  outline: none;
+  border: none;
+}
+
+.range .field input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  background: rgb(122, 122, 122);
+  border: 3px solid #ddd;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.range .field input::-moz-range-progress {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  background: rgb(122, 122, 122);
+  border: 3px solid #ddd;
+  border-radius: 50%;
+  cursor: pointer;
+}
