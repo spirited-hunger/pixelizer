@@ -42,7 +42,7 @@
 const CANVAS_MAX_WIDTH: number = 1080;
 const CANVAS_MAX_HEIGHT: number = 1080;
 
-const PIXEL_SIZE: number = 20;
+const PIXEL_SIZE: number = 15;
 
 const MAX_COLOR_DIST: number = 60;
 
