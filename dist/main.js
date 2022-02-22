@@ -2,6 +2,7 @@ const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
 const PIXEL_SIZE = 15;
 const MAX_COLOR_DIST = 60;
+let pixCount = 0;
 class Color {
     constructor(r, g, b) {
         this.r = r;
@@ -22,11 +23,13 @@ class PaletteColor extends Color {
 let palette = [];
 let imageWidth;
 let imageHeight;
+const defaultColor = "rgb(200, 200, 200)";
 let colorFromImage = "linear-gradient(180deg, rgb(227,227,227) 0%, rgba(188,195,205) 100%)";
 const dropArea = document.querySelector(".drag-area");
 const dragText = dropArea.querySelector("#drag-and-drop-msg");
 const browseButton = dropArea.querySelector(".browseButton");
 const pixelateButton = document.querySelector(".pixelateButton");
+const resetButton = document.querySelector(".resetButton");
 const input = dropArea.querySelector("input");
 const imgArea = document.querySelector(".image-area");
 const imgCanvas = document.createElement("canvas");
@@ -82,8 +85,34 @@ gridCanvas.addEventListener("mouseover", () => {
 gridCanvas.addEventListener("mouseout", () => {
     gridContext.clearRect(0, 0, imageWidth, imageHeight);
 });
+resetButton.addEventListener("click", () => {
+    imgContext.clearRect(0, 0, CANVAS_MAX_WIDTH, CANVAS_MAX_HEIGHT);
+    pixContext.clearRect(0, 0, CANVAS_MAX_WIDTH, CANVAS_MAX_HEIGHT);
+    resultContext.clearRect(0, 0, CANVAS_MAX_WIDTH, CANVAS_MAX_HEIGHT);
+    gridContext.clearRect(0, 0, CANVAS_MAX_WIDTH, CANVAS_MAX_HEIGHT);
+    imgFile = undefined;
+    imageWidth = undefined;
+    imageHeight = undefined;
+    palette = [];
+    dragText.innerHTML = "Drag & Drop Image";
+    input.value = "";
+    imgCanvas.width = 0;
+    imgCanvas.height = 0;
+    pixCanvas.width = 0;
+    pixCanvas.height = 0;
+    resultCanvas.width = 0;
+    resultCanvas.height = 0;
+    gridCanvas.width = 0;
+    gridCanvas.height = 0;
+    paletteArea.innerHTML = "";
+    dropArea.classList.remove("hidden");
+    document.body.style.background = defaultColor;
+    pixelateButton.classList.remove("active");
+    pixelateButton.style.background = "whitesmoke";
+    pixCount = 0;
+});
 pixelateButton.addEventListener("click", () => {
-    if (imageWidth !== undefined && imageHeight !== undefined) {
+    if (imageWidth !== undefined && imageHeight !== undefined && pixCount < 1) {
         console.log("pix!");
         const pixelSize = PIXEL_SIZE;
         const pixelNumCol = Math.floor(imageWidth / pixelSize);
@@ -161,9 +190,11 @@ pixelateButton.addEventListener("click", () => {
                 resultContext.restore();
             }
         }
+        showPalette();
+        pixelateButton.classList.remove("active");
+        pixelateButton.style.background = "whitesmoke";
+        pixCount++;
     }
-    showPalette();
-    console.log(palette);
 });
 const showFile = () => {
     let fileType = imgFile.type;
