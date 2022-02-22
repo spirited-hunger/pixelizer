@@ -69,6 +69,7 @@ let palette: PaletteColor[] = [];
 let imageWidth: number;
 let imageHeight: number;
 
+const defaultColor = "rgb(200, 200, 200)";
 let colorFromImage =
   "linear-gradient(180deg, rgb(227,227,227) 0%, rgba(188,195,205) 100%)";
 
@@ -82,6 +83,7 @@ const dragText: HTMLElement = dropArea.querySelector("#drag-and-drop-msg");
 const browseButton: HTMLButtonElement = dropArea.querySelector(".browseButton");
 const pixelateButton: HTMLButtonElement =
   document.querySelector(".pixelateButton");
+const resetButton: HTMLButtonElement = document.querySelector(".resetButton");
 const input: HTMLInputElement = dropArea.querySelector("input");
 
 /* image area */
@@ -177,6 +179,36 @@ gridCanvas.addEventListener("mouseover", () => {
 
 gridCanvas.addEventListener("mouseout", () => {
   gridContext.clearRect(0, 0, imageWidth, imageHeight);
+});
+
+/* R E S E T */
+
+resetButton.addEventListener("click", () => {
+  imgContext.clearRect(0, 0, imageWidth, imageHeight);
+  pixContext.clearRect(0, 0, imageWidth, imageHeight);
+  resultContext.clearRect(0, 0, imageWidth, imageHeight);
+  gridContext.clearRect(0, 0, imageWidth, imageHeight);
+  imgFile = undefined;
+  imageWidth = undefined;
+  imageHeight = undefined;
+  palette = [];
+  dragText.innerHTML = "Drag & Drop Image";
+  input.value = "";
+  imgCanvas.width = 0;
+  imgCanvas.height = 0;
+  pixCanvas.width = 0;
+  pixCanvas.height = 0;
+  resultCanvas.width = 0;
+  resultCanvas.height = 0;
+  gridCanvas.width = 0;
+  gridCanvas.height = 0;
+  paletteArea.innerHTML = "";
+
+  dropArea.classList.remove("hidden");
+  pixelateButton.classList.remove("active");
+
+  document.body.style.background = defaultColor;
+  pixelateButton.style.background = "white";
 });
 
 /* P I X A L A T E */
@@ -348,7 +380,7 @@ pixelateButton.addEventListener("click", () => {
     }
   }
   showPalette();
-  console.log(palette);
+  // console.log(palette);
 });
 
 // function to
