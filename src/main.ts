@@ -46,6 +46,8 @@ const PIXEL_SIZE: number = 15;
 
 const MAX_COLOR_DIST: number = 60;
 
+let pixCount: number = 0;
+
 class Color {
   rgbString: string;
   constructor(public r: number, public g: number, public b: number) {
@@ -184,10 +186,10 @@ gridCanvas.addEventListener("mouseout", () => {
 /* R E S E T */
 
 resetButton.addEventListener("click", () => {
-  imgContext.clearRect(0, 0, imageWidth, imageHeight);
-  pixContext.clearRect(0, 0, imageWidth, imageHeight);
-  resultContext.clearRect(0, 0, imageWidth, imageHeight);
-  gridContext.clearRect(0, 0, imageWidth, imageHeight);
+  imgContext.clearRect(0, 0, CANVAS_MAX_WIDTH, CANVAS_MAX_HEIGHT);
+  pixContext.clearRect(0, 0, CANVAS_MAX_WIDTH, CANVAS_MAX_HEIGHT);
+  resultContext.clearRect(0, 0, CANVAS_MAX_WIDTH, CANVAS_MAX_HEIGHT);
+  gridContext.clearRect(0, 0, CANVAS_MAX_WIDTH, CANVAS_MAX_HEIGHT);
   imgFile = undefined;
   imageWidth = undefined;
   imageHeight = undefined;
@@ -205,16 +207,17 @@ resetButton.addEventListener("click", () => {
   paletteArea.innerHTML = "";
 
   dropArea.classList.remove("hidden");
-  pixelateButton.classList.remove("active");
-
+  
   document.body.style.background = defaultColor;
-  pixelateButton.style.background = "white";
+  pixelateButton.classList.remove("active");
+  pixelateButton.style.background = "whitesmoke";
+  pixCount = 0;
 });
 
 /* P I X A L A T E */
 
 pixelateButton.addEventListener("click", () => {
-  if (imageWidth !== undefined && imageHeight !== undefined) {
+  if (imageWidth !== undefined && imageHeight !== undefined && pixCount < 1) {
     // double-check if image is uploaded
     // TODO : consider deleting this console.log
     console.log("pix!");
@@ -378,9 +381,12 @@ pixelateButton.addEventListener("click", () => {
         resultContext.restore();
       }
     }
+    showPalette();
+    // console.log(palette);
+    pixelateButton.classList.remove("active");
+    pixelateButton.style.background = "whitesmoke";
+    pixCount++;
   }
-  showPalette();
-  // console.log(palette);
 });
 
 // function to

@@ -2,6 +2,7 @@ const CANVAS_MAX_WIDTH = 1080;
 const CANVAS_MAX_HEIGHT = 1080;
 const PIXEL_SIZE = 15;
 const MAX_COLOR_DIST = 60;
+let pixCount = 0;
 class Color {
     constructor(r, g, b) {
         this.r = r;
@@ -85,10 +86,10 @@ gridCanvas.addEventListener("mouseout", () => {
     gridContext.clearRect(0, 0, imageWidth, imageHeight);
 });
 resetButton.addEventListener("click", () => {
-    imgContext.clearRect(0, 0, imageWidth, imageHeight);
-    pixContext.clearRect(0, 0, imageWidth, imageHeight);
-    resultContext.clearRect(0, 0, imageWidth, imageHeight);
-    gridContext.clearRect(0, 0, imageWidth, imageHeight);
+    imgContext.clearRect(0, 0, CANVAS_MAX_WIDTH, CANVAS_MAX_HEIGHT);
+    pixContext.clearRect(0, 0, CANVAS_MAX_WIDTH, CANVAS_MAX_HEIGHT);
+    resultContext.clearRect(0, 0, CANVAS_MAX_WIDTH, CANVAS_MAX_HEIGHT);
+    gridContext.clearRect(0, 0, CANVAS_MAX_WIDTH, CANVAS_MAX_HEIGHT);
     imgFile = undefined;
     imageWidth = undefined;
     imageHeight = undefined;
@@ -105,12 +106,13 @@ resetButton.addEventListener("click", () => {
     gridCanvas.height = 0;
     paletteArea.innerHTML = "";
     dropArea.classList.remove("hidden");
-    pixelateButton.classList.remove("active");
     document.body.style.background = defaultColor;
-    pixelateButton.style.background = "white";
+    pixelateButton.classList.remove("active");
+    pixelateButton.style.background = "whitesmoke";
+    pixCount = 0;
 });
 pixelateButton.addEventListener("click", () => {
-    if (imageWidth !== undefined && imageHeight !== undefined) {
+    if (imageWidth !== undefined && imageHeight !== undefined && pixCount < 1) {
         console.log("pix!");
         const pixelSize = PIXEL_SIZE;
         const pixelNumCol = Math.floor(imageWidth / pixelSize);
@@ -188,8 +190,11 @@ pixelateButton.addEventListener("click", () => {
                 resultContext.restore();
             }
         }
+        showPalette();
+        pixelateButton.classList.remove("active");
+        pixelateButton.style.background = "whitesmoke";
+        pixCount++;
     }
-    showPalette();
 });
 const showFile = () => {
     let fileType = imgFile.type;
