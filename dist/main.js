@@ -105,6 +105,12 @@ resetButton.addEventListener("click", () => {
     gridCanvas.width = 0;
     gridCanvas.height = 0;
     paletteArea.innerHTML = "";
+    imgCanvas.style.width = `${600}px`;
+    imgCanvas.style.height = `${600}px`;
+    resultCanvas.style.width = `${600}px`;
+    resultCanvas.style.height = `${600}px`;
+    gridCanvas.style.width = `${600}px`;
+    gridCanvas.style.height = `${600}px`;
     dropArea.classList.remove("hidden");
     document.body.style.background = defaultColor;
     pixelateButton.classList.remove("active");
