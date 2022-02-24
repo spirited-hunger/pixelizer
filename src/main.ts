@@ -68,10 +68,15 @@ class PaletteColor extends Color {
 
 let palette: PaletteColor[] = [];
 
+// image info
+
+let imageDirection: "landscape" | "portrait";
 let imageWidth: number;
 let imageHeight: number;
 
-const defaultColor = "rgb(200, 200, 200)";
+// colors
+
+const lightModedefaultColor = "rgb(227, 227, 227)";
 let colorFromImage =
   "linear-gradient(180deg, rgb(227,227,227) 0%, rgba(188,195,205) 100%)";
 
@@ -194,16 +199,16 @@ resetButton.addEventListener("click", () => {
   imageWidth = undefined;
   imageHeight = undefined;
   palette = [];
-  dragText.innerHTML = "Drag & Drop Image";
+  dragText.innerHTML = "Drag & Drop to Upload Image";
   input.value = "";
-  imgCanvas.width = 0;
-  imgCanvas.height = 0;
-  pixCanvas.width = 0;
-  pixCanvas.height = 0;
-  resultCanvas.width = 0;
-  resultCanvas.height = 0;
-  gridCanvas.width = 0;
-  gridCanvas.height = 0;
+  // imgCanvas.width = 0;
+  // imgCanvas.height = 0;
+  // pixCanvas.width = 0;
+  // pixCanvas.height = 0;
+  // resultCanvas.width = 0;
+  // resultCanvas.height = 0;
+  // gridCanvas.width = 0;
+  // gridCanvas.height = 0;
   paletteArea.innerHTML = "";
 
   imgCanvas.style.width = `${600}px`;
@@ -217,7 +222,7 @@ resetButton.addEventListener("click", () => {
 
   dropArea.classList.remove("hidden");
   
-  document.body.style.background = defaultColor;
+  document.body.style.background = lightModedefaultColor;
   pixelateButton.classList.remove("active");
   pixelateButton.style.background = "whitesmoke";
   pixCount = 0;
@@ -428,10 +433,12 @@ const showFile = () =>
           const whRatio: number = imageWidth / imageHeight;
           if (whRatio >= 1) {
             /* width is bigger */
+            imageDirection = "landscape";
             imageWidth = CANVAS_MAX_WIDTH;
             imageHeight = imageWidth / whRatio;
           } else {
             /* height is bigger */
+            imageDirection = "portrait";
             imageHeight = CANVAS_MAX_HEIGHT;
             imageWidth = imageHeight * whRatio;
           }
