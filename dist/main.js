@@ -21,9 +21,10 @@ class PaletteColor extends Color {
     }
 }
 let palette = [];
+let imageDirection;
 let imageWidth;
 let imageHeight;
-const defaultColor = "rgb(200, 200, 200)";
+const lightModedefaultColor = "rgb(227, 227, 227)";
 let colorFromImage = "linear-gradient(180deg, rgb(227,227,227) 0%, rgba(188,195,205) 100%)";
 const dropArea = document.querySelector(".drag-area");
 const dragText = dropArea.querySelector("#drag-and-drop-msg");
@@ -94,16 +95,8 @@ resetButton.addEventListener("click", () => {
     imageWidth = undefined;
     imageHeight = undefined;
     palette = [];
-    dragText.innerHTML = "Drag & Drop Image";
+    dragText.innerHTML = "Drag & Drop to Upload Image";
     input.value = "";
-    imgCanvas.width = 0;
-    imgCanvas.height = 0;
-    pixCanvas.width = 0;
-    pixCanvas.height = 0;
-    resultCanvas.width = 0;
-    resultCanvas.height = 0;
-    gridCanvas.width = 0;
-    gridCanvas.height = 0;
     paletteArea.innerHTML = "";
     imgCanvas.style.width = `${600}px`;
     imgCanvas.style.height = `${600}px`;
@@ -112,7 +105,7 @@ resetButton.addEventListener("click", () => {
     gridCanvas.style.width = `${600}px`;
     gridCanvas.style.height = `${600}px`;
     dropArea.classList.remove("hidden");
-    document.body.style.background = defaultColor;
+    document.body.style.background = lightModedefaultColor;
     pixelateButton.classList.remove("active");
     pixelateButton.style.background = "whitesmoke";
     pixCount = 0;
@@ -218,10 +211,12 @@ const showFile = () => {
                 imageHeight = originalImage.height;
                 const whRatio = imageWidth / imageHeight;
                 if (whRatio >= 1) {
+                    imageDirection = "landscape";
                     imageWidth = CANVAS_MAX_WIDTH;
                     imageHeight = imageWidth / whRatio;
                 }
                 else {
+                    imageDirection = "portrait";
                     imageHeight = CANVAS_MAX_HEIGHT;
                     imageWidth = imageHeight * whRatio;
                 }
