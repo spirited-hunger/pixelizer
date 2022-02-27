@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Pixpix</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .main-container {
+      border: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-auto-rows: 100vh;
+    }
+
+    /* nav children */
+
+    .nav-container {
+      background: #ddd;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .link-container {
+      border: #3f3f3f solid 2px;
+      position: absolute;
+      top: 4%;
+      left: 4%;
+    }
+    
+    .logo-container {
+      font-size: 10em;
+    }
+    .desc-container {
+      font-size: 1.5em;
+    }
+
+    /* section */
+
+    section {
+      background: #eee;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      overflow-x: auto;
+      overflow-y: auto;
+    }
+
+    /* image area */
+
+    .image-area {
+      flex: 0 0 400px;
+
+      height: 400px;
+
+      display: flex;
+      flex-direction: column;
+    }
+
+    .image-bar {
+      flex: 0 0 30px;
+      border: #3f3f3f solid 4px;
+    }
+    .image-content {
+      flex: 1 0 auto;
+      border-left: #3f3f3f solid 4px;
+      border-right: #3f3f3f solid 4px;
+      border-bottom: #3f3f3f solid 4px;
+    }
+
+    /* button area */
+
+    .pix-btn-area {
+      grid-row: 12/13;
+      grid-column: 4/5;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 10px;
+    }
+
+    .pix-preview-btn {
+      border: #3f3f3f solid 4px;
+      
+    }
+
+    .pix-next-btn {
+      border: #3f3f3f solid 4px;
+      
+    }
+
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <nav class="nav-container">
+      <div class="link-container">
+        gridlines
+      </div>
+      <div class="logo-container">
+        PIXPIX
+      </div>
+      <div class="desc-container">
+        An image based pixel art generator
+      </div>
+    </nav>
+    <section>
+      <div class="image-area">
+        <div class="image-bar"></div>
+        <div class="image-content"></div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
