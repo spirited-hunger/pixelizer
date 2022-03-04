@@ -1,21 +1,69 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function FuncComp(props: {initNum: number}) {
+function FuncComp(props: { initNum: number }) {
+  let numberState = React.useState(props.initNum);
+  let number = numberState[0]; // 상태값
+  let setNumber = numberState[1]; // 상태값 설정
+
+  let [date, setDate] = React.useState(new Date().toString());
+
   return (
     <div className="border-2 border-black m-4">
       <h2>function style component</h2>
-      <p>Number : {props.initNum}</p>
+      <p>Number : {number}</p>
+      <p>Date : {date}</p>
+      <input
+        className="border-2 border-black bg-slate-300"
+        type="button"
+        value="random"
+        onClick={() => {
+          setNumber(Math.floor(Math.random() * 100));
+        }}
+      />
+      <input
+        className="border-2 border-black bg-slate-300"
+        type="button"
+        value="date"
+        onClick={() => {
+          setDate(new Date().toString());
+        }}
+      />
     </div>
   );
 }
 
-class ClassComp extends React.Component <{initNum: number}, {}> {
+class ClassComp extends React.Component<
+  { initNum: number },
+  { number: number; date: string }
+> {
+  state = {
+    number: this.props.initNum, // initial number
+    date: new Date().toString(), // initial date
+  };
+
   render() {
     return (
       <div className="border-2 border-black m-4">
         <h2>class style component</h2>
-        <p>Number : {this.props.initNum}</p>
+        <p>Number : {this.state.number}</p>
+        <p>Date : {this.state.date}</p>
+        <input
+          className="border-2 border-black bg-slate-300"
+          type="button"
+          value="random"
+          onClick={() => {
+            this.setState({ number: Math.floor(Math.random() * 100) });
+          }}
+        />
+        <input
+          className="border-2 border-black bg-slate-300"
+          type="button"
+          value="date"
+          onClick={() => {
+            this.setState({ date: new Date().toString() });
+          }}
+        />
       </div>
     );
   }
@@ -28,8 +76,8 @@ export function Test() {
       <nav>
         <Link to="/">Home</Link> | <Link to="editor">Editor</Link>
       </nav>
-      <FuncComp initNum={2} />
-      <ClassComp initNum={2}/>
+      <FuncComp initNum={1} />
+      <ClassComp initNum={1} />
     </div>
   );
 }
