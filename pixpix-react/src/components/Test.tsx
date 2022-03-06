@@ -41,6 +41,9 @@ class ClassComp extends React.Component<
     number: this.props.initNum, // initial number
     date: new Date().toString(), // initial date
   };
+  componentWillMount() {
+    console.log("componentWillMount");
+  }
 
   render() {
     return (
