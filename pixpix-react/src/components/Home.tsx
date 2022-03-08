@@ -1,10 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
 // TODO : 업로드시 에디터로 이동
 
 type MyProp = {
-  file: string | undefined;
+  handleFileUpload: (file: string) => void;
 };
 
 type MyState = {
@@ -20,9 +19,6 @@ class Home extends React.Component<MyProp, MyState> {
   render() {
     return (
       <div className="m-0 grid grid-cols-2 auto-rows-[100vh]">
-        <Link className="hidden" to="editor">
-          Editor
-        </Link>
         <div className="main-container bg-dark-grey flex justify-center items-center">
           <div className="link-container absolute top-[4%] left-[4%] flex justify-center items-center">
             <div className="gridlines-icon-container border-2 border-dark-line h-5 w-5 inline-grid"></div>

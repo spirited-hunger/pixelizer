@@ -2,11 +2,10 @@ import React from "react";
 import "./App.css";
 import Home from "./components/Home";
 import Editor from "./components/Editor";
-import { Test } from "./components/Test";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+// import { Test } from "./components/Test";
 
 type MyState = {
-  file: string | undefined; // like this
+  file: string | undefined;
 };
 
 class App extends React.Component<{}, MyState> {
@@ -17,15 +16,15 @@ class App extends React.Component<{}, MyState> {
     };
   }
 
+  handleFileUpload = (file: string) => {
+    this.setState({ file });
+  }
+
   render() {
     return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home file={this.state.file} />} />
-          <Route path="/editor" element={<Editor />} />
-          <Route path="/test" element={<Test />} />
-        </Routes>
-      </BrowserRouter>
+      <div>
+        {this.state.file === undefined ? <Home handleFileUpload={this.handleFileUpload} /> : <Editor file={this.state.file}/> }
+      </div>
     );
   }
 }
