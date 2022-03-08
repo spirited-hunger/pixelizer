@@ -1,4 +1,5 @@
 import React from "react";
+import { Logo } from "./home_components/Logo";
 
 // TODO : 업로드시 에디터로 이동
 
@@ -10,7 +11,7 @@ type MyState = {
   file: string | undefined;
 };
 
-class Home extends React.Component<MyProp, MyState> {
+export class Home extends React.Component<MyProp, MyState> {
   constructor(props: MyProp) {
     super(props);
     this.state = { file: undefined };
@@ -24,12 +25,10 @@ class Home extends React.Component<MyProp, MyState> {
             <div className="gridlines-icon-container border-2 border-dark-line h-5 w-5 inline-grid"></div>
             <div className="ml-2">gridlines</div>
           </div>
-          <div className="logo-container flex flex-col justify-center items-center">
-            PIXPIX
-            <h1 className="desc-container">
-              An image based pixel art generator
-            </h1>
-          </div>
+            <Logo />
+          <h1 className="desc-container">
+            An image based pixel art generator
+          </h1>
         </div>
         <div className="preview-area bg-gradient-to-b from-blue-grey to-smooth-grey flex justify-center items-center overflow-x-auto overflow-y-auto">
           <div className="image-area h-[400px] flex-400 flex flex-col">
@@ -43,5 +42,3 @@ class Home extends React.Component<MyProp, MyState> {
     );
   }
 }
-
-export default Home;

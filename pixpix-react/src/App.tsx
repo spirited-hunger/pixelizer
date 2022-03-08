@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import Home from "./components/Home";
+import { Home } from "./components/Home";
 import Editor from "./components/Editor";
 // import { Test } from "./components/Test";
 
@@ -18,12 +18,16 @@ class App extends React.Component<{}, MyState> {
 
   handleFileUpload = (file: string) => {
     this.setState({ file });
-  }
+  };
 
   render() {
     return (
       <div>
-        {this.state.file === undefined ? <Home handleFileUpload={this.handleFileUpload} /> : <Editor file={this.state.file}/> }
+        {this.state.file === undefined ? (
+          <Home handleFileUpload={this.handleFileUpload} />
+        ) : (
+          <Editor file={this.state.file} />
+        )}
       </div>
     );
   }
