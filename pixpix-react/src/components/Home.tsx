@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "./home_components/Link";
 import { Logo } from "./home_components/Logo";
-import { Instruction } from "./home_components/Instruction";
+import { Preview } from "./home_components/Instruction";
 
 // TODO : 업로드시 에디터로 이동
 
@@ -27,7 +27,7 @@ export class Home extends React.Component<MyProp, MyState> {
           <Logo />
         </div>
         <div className="preview-area bg-gradient-to-b from-blue-grey to-smooth-grey flex justify-center items-center overflow-x-auto overflow-y-auto">
-          <Instruction />
+          <Preview />
         </div>
       </div>
     );

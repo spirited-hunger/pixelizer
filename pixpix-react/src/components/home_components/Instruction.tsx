@@ -1,6 +1,6 @@
 import React from "react";
 
-export class Instruction extends React.Component<{}, {}> {
+export class Preview extends React.Component<{}, {}> {
   constructor(props:{}) {
     super(props);
     this.state = {};
