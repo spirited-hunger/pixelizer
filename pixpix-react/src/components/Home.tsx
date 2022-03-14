@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "./home_components/Link";
 import { Logo } from "./home_components/Logo";
-import { Preview } from "./home_components/Instruction";
+import { Preview } from "./home_components/Preview";
 
 // TODO : 업로드시 에디터로 이동
 
