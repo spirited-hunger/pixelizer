@@ -74,8 +74,7 @@ class App extends React.Component<{}, MyState, {}> {
       if (e.dataTransfer) {
         const file = e.dataTransfer.files[0];
         this.setState({ file: file });
-        console.log(this.state.file)
-      } 
+      }
     };
 
     window.addEventListener("drop", onDrop);
@@ -103,9 +102,6 @@ class App extends React.Component<{}, MyState, {}> {
         ) : (
           <Editor file={this.state.file} />
         )}
-        <div>
-          {`state file ${this.state.file}`}
-        </div>
       </div>
     );
   }
