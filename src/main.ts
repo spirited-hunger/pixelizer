@@ -88,8 +88,7 @@ const dragText: HTMLElement = dropArea.querySelector("#drag-and-drop-msg");
 
 /* button area */
 const browseButton: HTMLButtonElement = dropArea.querySelector(".browseButton");
-const pixelateButton: HTMLButtonElement =
-  document.querySelector(".pixelateButton");
+const pixelateButton: HTMLButtonElement = document.querySelector(".pixelateButton");
 const resetButton: HTMLButtonElement = document.querySelector(".resetButton");
 const input: HTMLInputElement = dropArea.querySelector("input");
 
@@ -124,9 +123,9 @@ browseButton.addEventListener("click", () => {
   input.click(); // if browseButton is clicked the input is also clicked
 });
 
+// when file is uploaded by clicking browse button
 input.addEventListener("change", (e: Event): void => {
   const input = e.target as HTMLInputElement;
-
   // getting user select file and [0] means if a user selets multiple files we'll select only the first one
   imgFile = input.files[0];
   // ! if use this.files[0], "this" points to window because it is an arrow function
@@ -409,6 +408,7 @@ const showFile = () =>
   // toDivEl: HTMLDivElement,
   // toCanvasEl: HTMLCanvasElement
   {
+    console.log("showFile");
     let fileType = imgFile.type;
     let validExtentsions: string[] = ["image/jpeg", "image/jpg", "image/png"];
 

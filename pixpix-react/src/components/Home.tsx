@@ -7,10 +7,11 @@ import { Preview } from "./home_components/Preview";
 
 type MyProp = {
   handleFileUpload: (file: string) => void;
+  dragDropMessage: string;
 };
 
 type MyState = {
-  file: string | undefined;
+  file: File | undefined;
 };
 
 export class Home extends React.Component<MyProp, MyState> {
