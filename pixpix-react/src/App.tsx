@@ -12,7 +12,6 @@ const PIXEL_SIZE = 15;
 
 const MAX_COLOR_DISTANCE = 60;
 
-
 let pixCount = 0;
 
 class Color {
@@ -34,48 +33,79 @@ class PaletteColor extends Color {
 }
 
 type MyState = {
-  file: string | undefined;
+  file: File | null;
   dragDropMessage: string;
 };
 
-
-class App extends React.Component<{}, MyState, {}> {  
+class App extends React.Component<{}, MyState, {}> {
   onUnmount = [] as (() => void)[];
 
   constructor(props: any) {
     super(props);
     this.state = {
-      file: undefined,
-      dragDropMessage: 'Drag and drop your image to start',
+      file: null,
+      dragDropMessage: "Drag and drop your image to start",
     };
   }
 
   componentDidMount() {
-    const onClick = (e: MouseEvent) => {
-      console.log("click");
-    }
-    window.addEventListener("click", onClick);
+    const onDragOver = (e: DragEvent): void => {
+      e.preventDefault();
+      this.setState({ dragDropMessage: "Release your image to upload" });
+    };
+
+    window.addEventListener("dragover", onDragOver);
+    this.onUnmount.push(() => {
+      window.removeEventListener("dragover", onDragOver);
+    });
+
+    const onDragLeave = (e: DragEvent): void => {
+      e.preventDefault();
+      this.setState({ dragDropMessage: "Drag and drop your image to start" });
+    };
+
+    window.addEventListener("dragleave", onDragLeave);
+    this.onUnmount.push(() => {
+      window.removeEventListener("dragleave", onDragLeave);
+    });
+
+    const onDrop = (e: DragEvent): void => {
+      e.preventDefault();
+      if (e.dataTransfer) {
+        const file = e.dataTransfer.files[0];
+        this.setState({ file: file });
+        console.log(this.state.file)
+      } 
+    };
+
+    window.addEventListener("drop", onDrop);
+    this.onUnmount.push(() => {
+      window.removeEventListener("drop", onDrop);
+    });
   }
 
   componentWillUnmount() {
     this.onUnmount.forEach((f) => f());
   }
 
-  handleFileUpload = (file: string) => {
-    this.setState({ file });
+  handleFileUpload = (file: File) => {
+    this.setState({ file: file });
   };
 
   render() {
     return (
       <div>
-        {this.state.file === undefined ? (
-          <Home 
+        {this.state.file === null ? (
+          <Home
             handleFileUpload={this.handleFileUpload}
-            dragDropMessage={this.state.dragDropMessage} 
+            dragDropMessage={this.state.dragDropMessage}
           />
         ) : (
           <Editor file={this.state.file} />
         )}
+        <div>
+          {`state file ${this.state.file}`}
+        </div>
       </div>
     );
   }

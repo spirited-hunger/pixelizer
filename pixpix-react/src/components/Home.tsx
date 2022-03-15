@@ -6,18 +6,17 @@ import { Preview } from "./home_components/Preview";
 // TODO : 업로드시 에디터로 이동
 
 type MyProp = {
-  handleFileUpload: (file: string) => void;
-  dragDropMessage: string;
+  handleFileUpload: (file: File) => void,
+  dragDropMessage: string,
 };
 
 type MyState = {
-  file: File | undefined;
 };
 
 export class Home extends React.Component<MyProp, MyState> {
   constructor(props: MyProp) {
     super(props);
-    this.state = { file: undefined };
+    this.state = {};
   }
 
   render() {
@@ -28,7 +27,7 @@ export class Home extends React.Component<MyProp, MyState> {
           <Logo />
         </div>
         <div className="preview-area bg-gradient-to-b from-blue-grey to-smooth-grey flex justify-center items-center overflow-x-auto overflow-y-auto">
-          <Preview />
+          <Preview dragDropMessage={this.props.dragDropMessage} />
         </div>
       </div>
     );

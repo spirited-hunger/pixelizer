@@ -3,7 +3,7 @@ import React from "react";
 // TODO : 업로드시 에디터로 이동
 
 type MyProp = {
-  file: string; // unidefined 인 경우 프롭에 오지 않음
+  file: File; // unidefined 인 경우 프롭에 오지 않음
 };
 
 type MyState = {
