@@ -16,8 +16,57 @@ class Editor extends React.Component<MyProp, MyState> {
 
   render() {
     return (
-      <div className="m-0 grid grid-cols-2 auto-rows-[100vh]">
-        {`state file : ${this.props.file}`}
+      <div className="main-area ">
+        <div className="nav-area">
+          <div className="logo-area">
+            PIXPIX  
+          </div>
+          <div className="menu-area">
+            <div>
+              <div>open image</div>  
+            </div>
+            <div>
+              <div>reset image</div>  
+            </div>
+            <div>
+              <div>save image</div>  
+            </div>
+            <div>
+              <div>share image</div>  
+            </div>
+          </div>
+          <div className="github-area">
+            Github  
+          </div>
+        </div>
+        <div className="editor-area">
+          <div className="image-area">
+            <div className="image-bar"></div>
+            <div className="image-content"></div>  
+          </div>
+          <div className="edit-area">
+            <div className="size-edit-area">
+              <div className="size-edit-bar"></div>  
+              <div className="size-edit-content"></div>
+            </div>
+            <div className="shape-edit-area">
+              <div className="shape-edit-bar"></div>
+              <div className="shape-edit-content"></div>  
+            </div>
+            <div className="palette-edit-area">
+              <div className="palette-edit-bar"></div>
+              <div className="palette-edit-content"></div>
+            </div>
+            <div className="color-edit-area">
+              <div className="color-edit-bar"></div>
+              <div className="color-edit-content"></div>  
+            </div>
+          </div>
+          <div className="pix-btn-area">
+            <div className="pix-preview-btn"></div>
+            <div className="pix-next-btn"></div>
+          </div>
+        </div>
       </div>
     );
   }

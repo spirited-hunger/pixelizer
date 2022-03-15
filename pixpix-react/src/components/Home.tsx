@@ -22,11 +22,11 @@ export class Home extends React.Component<MyProp, MyState> {
   render() {
     return (
       <div className="m-0 grid grid-cols-2 auto-rows-[100vh]">
-        <div className="main-container bg-dark-grey flex justify-center items-center">
+        <div className="bg-dark-grey flex justify-center items-center">
           <Link />
           <Logo />
         </div>
-        <div className="preview-area bg-gradient-to-b from-blue-grey to-smooth-grey flex justify-center items-center overflow-x-auto overflow-y-auto">
+        <div className="bg-gradient-to-b from-blue-grey to-smooth-grey flex justify-center items-center overflow-x-auto overflow-y-auto">
           <Preview dragDropMessage={this.props.dragDropMessage} />
         </div>
       </div>
