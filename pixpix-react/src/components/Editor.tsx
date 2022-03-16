@@ -2,83 +2,37 @@ import React from "react";
 
 // TODO : 업로드시 에디터로 이동
 
-type MyProp = {
-  file: File; // unidefined 인 경우 프롭에 오지 않음
-  canvasMaxWidth: number;
-  canvasMaxHeight: number;
-};
-
-type MyState = {
+type MyProps = {
+  fileURL: string; // unidefined 인 경우 프롭에 오지 않음
+  imageElement: HTMLImageElement;
   imageWidth: number;
   imageHeight: number;
+  imageDirection: "landscape" | "portrait";
 };
 
-class Editor extends React.Component<MyProp, MyState> {
+type MyState = {};
+
+class Editor extends React.Component<MyProps, MyState> {
   imageCanvasRef: React.RefObject<HTMLCanvasElement>;
   pixCanvasRef: React.RefObject<HTMLCanvasElement>;
   resultCanvasRef: React.RefObject<HTMLCanvasElement>;
   gridCanvasRef: React.RefObject<HTMLCanvasElement>;
 
-  constructor(props: MyProp) {
+  constructor(props: MyProps) {
     super(props);
-    this.state = {
-      imageWidth: 0,
-      imageHeight: 0,
-    };
+    this.state = {};
     this.imageCanvasRef = React.createRef();
     this.pixCanvasRef = React.createRef();
     this.resultCanvasRef = React.createRef();
     this.gridCanvasRef = React.createRef();
   }
-
-  imageDirection: "landscape" | "portrait" = "landscape";
   onUnmount = [] as (() => void)[];
 
   componentDidMount() {
-    const originalImage = new Image();
+    const imageCanvas = this.imageCanvasRef.current;
+    const imageContext = imageCanvas?.getContext("2d");
 
-    const fileReader = new FileReader();
-
-    fileReader.readAsDataURL(this.props.file);
-
-    fileReader.onload = () => {
-      originalImage.src = `${fileReader.result}` as string;
-
-      const onImageLoad = () => {
-        const originalWidth = originalImage.width;
-        const originalHeight = originalImage.height;
-
-        const whRatio = originalWidth / originalHeight;
-        if (whRatio >= 1) {
-          /* width is bigger */
-          this.imageDirection = "landscape";
-
-          this.setState({
-            imageWidth: this.props.canvasMaxWidth,
-            imageHeight: this.props.canvasMaxWidth / whRatio,
-          });
-        } else {
-          /* height is bigger */
-          this.imageDirection = "portrait";
-
-          this.setState({
-            imageWidth: this.props.canvasMaxHeight * whRatio,
-            imageHeight: this.props.canvasMaxHeight,
-          });
-        }
-
-        const imageCanvas = this.imageCanvasRef.current;
-        const imageContext = imageCanvas?.getContext("2d");
-
-        imageContext?.drawImage(originalImage, 0, 0, this.state.imageWidth, this.state.imageHeight);
-
-      };
-
-      originalImage.addEventListener("load", onImageLoad);
-      this.onUnmount.push(() => {
-        originalImage.removeEventListener("load", onImageLoad);
-      });
-    };
+    imageContext?.drawImage(this.props.imageElement, 0, 0, this.props.imageWidth, this.props.imageHeight);
   }
 
   componentWillUnmount() {
@@ -111,9 +65,9 @@ class Editor extends React.Component<MyProp, MyState> {
             <div className="image-bar"></div>
             <div className="image-content">
               <canvas
-                className={`image-canvas w-${this.state.imageWidth} h-${this.state.imageHeight} border-2 border-black`}
-                width={this.state.imageWidth}
-                height={this.state.imageHeight}
+                className={`image-canvas w-${this.props.imageWidth} h-${this.props.imageHeight} border-2 border-black`}
+                width={this.props.imageWidth}
+                height={this.props.imageHeight}
                 ref={this.imageCanvasRef}
               ></canvas>
               <canvas

@@ -33,7 +33,11 @@ class PaletteColor extends Color {
 }
 
 type MyState = {
-  file: File | null;
+  fileURL: string;
+  imageElement: HTMLImageElement | null;
+  imageWidth: number;
+  imageHeight: number;
+  imageDirection: "landscape" | "portrait";
   dragDropMessage: string;
 };
 
@@ -45,7 +49,11 @@ class App extends React.Component<{}, MyState, {}> {
   constructor(props: any) {
     super(props);
     this.state = {
-      file: null,
+      fileURL: "",
+      imageElement: null,
+      imageWidth: 0,
+      imageHeight: 0,
+      imageDirection: "landscape",
       dragDropMessage: "Drag and drop your image to start",
     };
   }
@@ -80,10 +88,52 @@ class App extends React.Component<{}, MyState, {}> {
         const validExtensions = ["image/jpeg", "image/jpg", "image/png"];
 
         if (validExtensions.includes(fileType)) {
-          this.setState({ file: file });
+          const fileReader = new FileReader();
+
+          fileReader.readAsDataURL(file);
+
+          fileReader.onload = () => {
+            const originalImage = new Image();
+
+            originalImage.src = `${fileReader.result}` as string;
+
+            originalImage.onload = () => {
+              const originalWidth = originalImage.width;
+              const originalHeight = originalImage.height;
+
+              const whRatio = originalWidth / originalHeight;
+
+              let imageDirection: "landscape" | "portrait";
+              let imageWidth: number;
+              let imageHeight: number;
+              if (whRatio >= 1) {
+                /* width is bigger */
+                imageDirection = "landscape";
+
+                imageWidth = this.canvasMaxWidth;
+                imageHeight = this.canvasMaxWidth / whRatio;
+              } else {
+                /* height is bigger */
+                imageDirection = "portrait";
+
+                imageWidth = this.canvasMaxHeight * whRatio;
+                imageHeight = this.canvasMaxHeight;
+              }
+
+              this.setState({
+                fileURL: `${fileReader.result}`,
+                imageElement: originalImage,
+                imageDirection: imageDirection,
+                imageWidth: imageWidth,
+                imageHeight: imageHeight,
+              });
+            };
+          };
         } else {
           alert("Invalid file type");
-          this.setState({ dragDropMessage: "Drag and drop your image to start" });
+          this.setState({
+            dragDropMessage: "Drag and drop your image to start",
+          });
         }
       }
     };
@@ -98,20 +148,29 @@ class App extends React.Component<{}, MyState, {}> {
     this.onUnmount.forEach((f) => f());
   }
 
-  handleFileUpload = (file: File) => {
-    this.setState({ file: file });
+  handleFileUpload = (fileURL: string) => {
+    this.setState({ fileURL: fileURL });
   };
 
   render() {
     return (
       <div>
-        {this.state.file === null ? (
+        {this.state.fileURL === "" ||
+        this.state.imageElement === null ||
+        this.state.imageHeight === 0 ||
+        this.state.imageWidth === 0 ? (
           <Home
             handleFileUpload={this.handleFileUpload}
             dragDropMessage={this.state.dragDropMessage}
           />
         ) : (
-          <Editor file={this.state.file} canvasMaxHeight={this.canvasMaxHeight} canvasMaxWidth={this.canvasMaxWidth}/>
+          <Editor
+            fileURL={this.state.fileURL}
+            imageElement={this.state.imageElement}
+            imageWidth={this.state.imageWidth}
+            imageHeight={this.state.imageHeight}
+            imageDirection={this.state.imageDirection}
+          />
         )}
       </div>
     );

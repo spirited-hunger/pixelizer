@@ -6,7 +6,7 @@ import { Preview } from "./home_components/Preview";
 // TODO : 업로드시 에디터로 이동
 
 type MyProp = {
-  handleFileUpload: (file: File) => void,
+  handleFileUpload: (fileURL: string) => void,
   dragDropMessage: string,
 };
 
