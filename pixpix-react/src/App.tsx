@@ -120,6 +120,9 @@ class App extends React.Component<{}, MyState, {}> {
                 imageHeight = this.canvasMaxHeight;
               }
 
+              // TODO 사이드이펙트 위험 (consider renaming)
+              this.onUnmount.forEach((f) => f());
+
               this.setState({
                 fileURL: `${fileReader.result}`,
                 imageElement: originalImage,
