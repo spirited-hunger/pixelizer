@@ -39,6 +39,8 @@ type MyState = {
 
 class App extends React.Component<{}, MyState, {}> {
   onUnmount = [] as (() => void)[];
+  canvasMaxWidth: number = CANVAS_MAX_WIDTH;
+  canvasMaxHeight: number = CANVAS_MAX_HEIGHT;
 
   constructor(props: any) {
     super(props);
@@ -73,7 +75,16 @@ class App extends React.Component<{}, MyState, {}> {
       e.preventDefault();
       if (e.dataTransfer) {
         const file = e.dataTransfer.files[0];
-        this.setState({ file: file });
+
+        const fileType = file.type;
+        const validExtensions = ["image/jpeg", "image/jpg", "image/png"];
+
+        if (validExtensions.includes(fileType)) {
+          this.setState({ file: file });
+        } else {
+          alert("Invalid file type");
+          this.setState({ dragDropMessage: "Drag and drop your image to start" });
+        }
       }
     };
 
@@ -100,7 +111,7 @@ class App extends React.Component<{}, MyState, {}> {
             dragDropMessage={this.state.dragDropMessage}
           />
         ) : (
-          <Editor file={this.state.file} />
+          <Editor file={this.state.file} canvasMaxHeight={this.canvasMaxHeight} canvasMaxWidth={this.canvasMaxWidth}/>
         )}
       </div>
     );
