@@ -2,15 +2,9 @@ import React from "react";
 import "./App.css";
 import { Home } from "./components/Home";
 import Editor from "./components/Editor";
+import { PixConst } from "./AppConst";
+import { resizeImage } from "./ImageResize";
 // import { Test } from "./components/Test";
-
-// Important values
-const CANVAS_MAX_WIDTH = 1080;
-const CANVAS_MAX_HEIGHT = 1080;
-
-const PIXEL_SIZE = 15;
-
-const MAX_COLOR_DISTANCE = 60;
 
 let pixCount = 0;
 
@@ -33,26 +27,30 @@ class PaletteColor extends Color {
 }
 
 type MyState = {
-  fileURL: string;
+  imageURL: string;
   imageElement: HTMLImageElement | null;
-  imageWidth: number;
-  imageHeight: number;
+  imagePXWidth: number;
+  imagePXHeight: number;
+  imageCSSWidth: number;
+  imageCSSHeight: number;
   imageDirection: "landscape" | "portrait";
   dragDropMessage: string;
 };
 
 class App extends React.Component<{}, MyState, {}> {
   onUnmount = [] as (() => void)[];
-  canvasMaxWidth: number = CANVAS_MAX_WIDTH;
-  canvasMaxHeight: number = CANVAS_MAX_HEIGHT;
+  canvasMaxPXLength: number = PixConst.CANVAS_MAX_PX_LENGTH;
+  convasMaxCSSLength: number = PixConst.CANVAS_MAX_CSS_LENGTH;
 
   constructor(props: any) {
     super(props);
     this.state = {
-      fileURL: "",
+      imageURL: "",
       imageElement: null,
-      imageWidth: 0,
-      imageHeight: 0,
+      imagePXWidth: 0,
+      imagePXHeight: 0,
+      imageCSSWidth: 0,
+      imageCSSHeight: 0,
       imageDirection: "landscape",
       dragDropMessage: "Drag and drop your image to start",
     };
@@ -88,50 +86,17 @@ class App extends React.Component<{}, MyState, {}> {
         const validExtensions = ["image/jpeg", "image/jpg", "image/png"];
 
         if (validExtensions.includes(fileType)) {
-          const fileReader = new FileReader();
+          resizeImage(
+            file,
+            this.canvasMaxPXLength,
+            this.convasMaxCSSLength
+          ).then((d) => {
+            this.setState(d);
+          });
 
-          fileReader.readAsDataURL(file);
-
-          fileReader.onload = () => {
-            const originalImage = new Image();
-
-            originalImage.src = `${fileReader.result}` as string;
-
-            originalImage.onload = () => {
-              const originalWidth = originalImage.width;
-              const originalHeight = originalImage.height;
-
-              const whRatio = originalWidth / originalHeight;
-
-              let imageDirection: "landscape" | "portrait";
-              let imageWidth: number;
-              let imageHeight: number;
-              if (whRatio >= 1) {
-                /* width is bigger */
-                imageDirection = "landscape";
-
-                imageWidth = this.canvasMaxWidth;
-                imageHeight = this.canvasMaxWidth / whRatio;
-              } else {
-                /* height is bigger */
-                imageDirection = "portrait";
-
-                imageWidth = this.canvasMaxHeight * whRatio;
-                imageHeight = this.canvasMaxHeight;
-              }
-
-              // TODO 사이드이펙트 위험 (consider renaming)
-              this.onUnmount.forEach((f) => f());
-
-              this.setState({
-                fileURL: `${fileReader.result}`,
-                imageElement: originalImage,
-                imageDirection: imageDirection,
-                imageWidth: imageWidth,
-                imageHeight: imageHeight,
-              });
-            };
-          };
+          // TODO 사이드이펙트 위험 (consider renaming)
+          // 드래그드랍 이벤트 리스너 제거
+          this.onUnmount.forEach((f) => f());
         } else {
           alert("Invalid file type");
           this.setState({
@@ -151,27 +116,29 @@ class App extends React.Component<{}, MyState, {}> {
     this.onUnmount.forEach((f) => f());
   }
 
-  handleFileUpload = (fileURL: string) => {
-    this.setState({ fileURL: fileURL });
+  handleFileUpload = (imageURL: string) => {
+    this.setState({ imageURL: imageURL });
   };
 
   render() {
     return (
       <div>
-        {this.state.fileURL === "" ||
+        {this.state.imageURL === "" ||
         this.state.imageElement === null ||
-        this.state.imageHeight === 0 ||
-        this.state.imageWidth === 0 ? (
+        this.state.imagePXHeight === 0 ||
+        this.state.imagePXWidth === 0 ? (
           <Home
             handleFileUpload={this.handleFileUpload}
             dragDropMessage={this.state.dragDropMessage}
           />
         ) : (
           <Editor
-            fileURL={this.state.fileURL}
+            imageURL={this.state.imageURL}
             imageElement={this.state.imageElement}
-            imageWidth={this.state.imageWidth}
-            imageHeight={this.state.imageHeight}
+            imagePXWidth={this.state.imagePXWidth}
+            imagePXHeight={this.state.imagePXHeight}
+            imageCSSWidth={`${this.state.imageCSSWidth}px`}
+            imageCSSHeight={`${this.state.imageCSSHeight}px`}
             imageDirection={this.state.imageDirection}
           />
         )}

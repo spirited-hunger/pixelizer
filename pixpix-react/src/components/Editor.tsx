@@ -1,12 +1,12 @@
 import React from "react";
 
-// TODO : 업로드시 에디터로 이동
-
 type MyProps = {
-  fileURL: string; // unidefined 인 경우 프롭에 오지 않음
+  imageURL: string; // unidefined 인 경우 프롭에 오지 않음
   imageElement: HTMLImageElement;
-  imageWidth: number;
-  imageHeight: number;
+  imagePXWidth: number;
+  imagePXHeight: number;
+  imageCSSWidth: string;
+  imageCSSHeight: string;
   imageDirection: "landscape" | "portrait";
 };
 
@@ -32,7 +32,15 @@ class Editor extends React.Component<MyProps, MyState> {
     const imageCanvas = this.imageCanvasRef.current;
     const imageContext = imageCanvas?.getContext("2d");
 
-    imageContext?.drawImage(this.props.imageElement, 0, 0, this.props.imageWidth, this.props.imageHeight);
+    console.log(this.props);
+
+    imageContext?.drawImage(
+      this.props.imageElement,
+      0,
+      0,
+      this.props.imagePXWidth,
+      this.props.imagePXHeight
+    );
   }
 
   componentWillUnmount() {
@@ -41,8 +49,8 @@ class Editor extends React.Component<MyProps, MyState> {
 
   render() {
     return (
-      <div className="main-area ">
-        <div className="nav-area">
+      <div className="main-area bg-gradient-to-b from-blue-grey to-smooth-grey border-none grid grid-cols-7 auto-rows-[100vh]">
+        <div className="nav-area bg-dark-grey">
           <div className="logo-area">PIXPIX</div>
           <div className="menu-area">
             <div>
@@ -65,10 +73,14 @@ class Editor extends React.Component<MyProps, MyState> {
             <div className="image-bar"></div>
             <div className="image-content">
               <canvas
-                className={`image-canvas w-${this.props.imageWidth} h-${this.props.imageHeight} border-2 border-black`}
-                width={this.props.imageWidth}
-                height={this.props.imageHeight}
+                className={`image-canvas ${this.props.imageCSSWidth} ${this.props.imageCSSHeight} border-2 border-black`}
+                width={this.props.imagePXWidth}
+                height={this.props.imagePXHeight}
                 ref={this.imageCanvasRef}
+                style={{
+                  width: `${this.props.imageCSSWidth}`,
+                  height: `${this.props.imageCSSHeight}`,
+                }}
               ></canvas>
               <canvas
                 className="pix-canvas hidden"
