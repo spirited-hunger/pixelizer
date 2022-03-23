@@ -23,6 +23,9 @@ module.exports = {
       },
       flex: {
         '400': '0 0 400px',
+      },
+      gridRow: {
+        'span-13': 'span 13 / span 13',
       }
     },
   },

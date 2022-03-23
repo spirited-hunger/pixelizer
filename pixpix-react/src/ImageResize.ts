@@ -17,10 +17,6 @@ type ResizedImgSize = {
   imageDirection: "landscape" | "portrait";
 };
 
-type imgURL = {
-  fileURL: string;
-};
-
 const getImgURL = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
     const fileReader = new FileReader();
