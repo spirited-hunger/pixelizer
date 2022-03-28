@@ -29,7 +29,6 @@ class Editor extends React.Component<MyProps, MyState> {
 
   componentDidMount() {
 
-
   }
 
   componentWillUnmount() {
@@ -42,7 +41,6 @@ class Editor extends React.Component<MyProps, MyState> {
         <div className="nav-area bg-dark-grey min-w-[300px] grid grid-rows-[1fr_5fr_1fr] auto-rows-[minmax(100px, auto)]">
           <Logo />
           <Menu />
-
           <Github />
         </div>
         <div className="editor-area flex bg-[#eee] justify-center items-center overflow-x-auto overflow-y-auto">

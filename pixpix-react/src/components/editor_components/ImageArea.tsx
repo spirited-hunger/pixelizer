@@ -49,7 +49,7 @@ export class ImageArea extends React.Component<MyProps, {}> {
     return (
       <div className="image-area row-[1/13] col-[1/4] flex flex-col">
         <div className="image-bar bg-dark-grey flex-[0_0_30px] border-pix border-dark-line">
-          image size: {this.props.imagePXWidth} x {this.props.imagePXHeight}
+          image size: {Math.floor(this.props.imagePXWidth * 10) / 10} x {Math.floor(this.props.imagePXHeight * 10) / 10}
         </div>
         <div className="image-content flex-[1_0_auto] border-l-pix border-r-pix border-b-pix border-dark-line flex justify-center items-center">
           <canvas
