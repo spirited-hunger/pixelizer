@@ -48,10 +48,12 @@ export class ImageArea extends React.Component<MyProps, {}> {
   render() {
     return (
       <div className="image-area row-[1/13] col-[1/4] flex flex-col">
-        <div className="image-bar bg-dark-grey flex-[0_0_30px] border-4 border-dark-line"></div>
-        <div className="image-content flex-[1_0_auto] border-l-4 border-r-4 border-b-4 border-dark-line flex justify-center items-center">
+        <div className="image-bar bg-dark-grey flex-[0_0_30px] border-pix border-dark-line">
+          image size: {this.props.imagePXWidth} x {this.props.imagePXHeight}
+        </div>
+        <div className="image-content flex-[1_0_auto] border-l-pix border-r-pix border-b-pix border-dark-line flex justify-center items-center">
           <canvas
-            className={`image-canvas border-4 border-black absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-48%]`}
+            className={`image-canvas border-pix border-black absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-48%]`}
             ref={this.imageCanvasRef}
             width={this.props.imagePXWidth}
             height={this.props.imagePXHeight}
@@ -61,7 +63,7 @@ export class ImageArea extends React.Component<MyProps, {}> {
             }}
           ></canvas>
           <canvas
-            className="pix-canvas border-4 border-black absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-48%]"
+            className="pix-canvas border-pix border-black absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-48%]"
             ref={this.pixCanvasRef}
             width={this.props.imagePXWidth}
             height={this.props.imagePXHeight}
@@ -71,7 +73,7 @@ export class ImageArea extends React.Component<MyProps, {}> {
             }}
           ></canvas>
           <canvas
-            className="result-canvas border-4 border-black absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-48%]"
+            className="result-canvas border-pix border-black absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-48%]"
             ref={this.resultCanvasRef}
             width={this.props.imagePXWidth}
             height={this.props.imagePXHeight}
@@ -81,7 +83,7 @@ export class ImageArea extends React.Component<MyProps, {}> {
             }}
           ></canvas>
           <canvas
-            className="grid-canvas border-4 border-black absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-48%]"
+            className="grid-canvas border-pix border-black absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-48%]"
             ref={this.gridCanvasRef}
             width={this.props.imagePXWidth}
             height={this.props.imagePXHeight}
