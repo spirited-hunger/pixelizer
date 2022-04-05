@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
 function FuncComp(props: { initNum: number }) {
   let numberState = React.useState(props.initNum);
@@ -76,9 +75,6 @@ export function Test() {
   return (
     <div className="border-2 border-black m-4">
       <h1 className="text-5xl">Test</h1>
-      <nav>
-        <Link to="/">Home</Link> | <Link to="editor">Editor</Link>
-      </nav>
       <FuncComp initNum={1} />
       <ClassComp initNum={1} />
     </div>

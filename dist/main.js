@@ -196,6 +196,7 @@ pixelateButton.addEventListener("click", () => {
     }
 });
 const showFile = () => {
+    console.log("showFile");
     let fileType = imgFile.type;
     let validExtentsions = ["image/jpeg", "image/jpg", "image/png"];
     if (validExtentsions.includes(fileType)) {
