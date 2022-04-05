@@ -38,7 +38,7 @@ class Editor extends React.Component<MyProps, MyState> {
   render() {
     return (
       <div className="main-area bg-gradient-to-b from-blue-grey to-smooth-grey border-none grid grid-cols-[1fr_6fr] auto-rows-[100vh]">
-        <div className="nav-area bg-dark-grey min-w-[300px] grid grid-rows-[1fr_5fr_1fr] auto-rows-[minmax(100px, auto)]">
+        <div className="nav-area z-50 bg-dark-grey min-w-[300px] grid grid-rows-[1fr_5fr_1fr] auto-rows-[minmax(100px, auto)]">
           <Logo />
           <Menu />
           <Github />
