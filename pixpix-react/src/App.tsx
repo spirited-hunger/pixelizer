@@ -56,6 +56,31 @@ class App extends React.Component<{}, MyState, {}> {
     };
   }
 
+  showFile(file: File) {
+    const fileType = file.type;
+
+    const validExtensions = ["image/jpeg", "image/jpg", "image/png"];
+
+    if (validExtensions.includes(fileType)) {
+      resizeImage(
+        file,
+        this.canvasMaxPXLength,
+        this.convasMaxCSSLength
+      ).then((d) => {
+        this.setState(d);
+      });
+
+      // TODO 사이드이펙트 위험 (consider renaming)
+      // 드래그드랍 이벤트 리스너 제거
+      this.onUnmount.forEach((f) => f());
+    } else {
+      alert("Invalid file type");
+      this.setState({
+        dragDropMessage: "Drag and drop your image to start",
+      });
+    }
+  }
+
   componentDidMount() {
     const onDragOver = (e: DragEvent): void => {
       e.preventDefault();
@@ -82,27 +107,7 @@ class App extends React.Component<{}, MyState, {}> {
       if (e.dataTransfer) {
         const file = e.dataTransfer.files[0];
 
-        const fileType = file.type;
-        const validExtensions = ["image/jpeg", "image/jpg", "image/png"];
-
-        if (validExtensions.includes(fileType)) {
-          resizeImage(
-            file,
-            this.canvasMaxPXLength,
-            this.convasMaxCSSLength
-          ).then((d) => {
-            this.setState(d);
-          });
-
-          // TODO 사이드이펙트 위험 (consider renaming)
-          // 드래그드랍 이벤트 리스너 제거
-          this.onUnmount.forEach((f) => f());
-        } else {
-          alert("Invalid file type");
-          this.setState({
-            dragDropMessage: "Drag and drop your image to start",
-          });
-        }
+        this.showFile(file);
       }
     };
 
@@ -116,8 +121,8 @@ class App extends React.Component<{}, MyState, {}> {
     this.onUnmount.forEach((f) => f());
   }
 
-  handleFileUpload = (imageURL: string) => {
-    this.setState({ imageURL: imageURL });
+  handleFileUpload = (file: File) => {
+    this.showFile(file);
   };
 
   render() {
