@@ -16,16 +16,25 @@ type MyProps = {
   imageDirection: "landscape" | "portrait";
 };
 
-type MyState = {};
+type MyState = {
+  curStage: "size" | "shape" | "palette" | "color";
+};
 
 class Editor extends React.Component<MyProps, MyState> {
 
   constructor(props: MyProps) {
     super(props);
-    this.state = {};
-
+    this.state = {
+      curStage: "size"
+    };
   }
   onUnmount = [] as (() => void)[];
+
+  curStageHandler = (stage: "size" | "shape" | "palette" | "color") => {
+    this.setState({
+      curStage: stage
+    });
+  };
 
   componentDidMount() {
 
@@ -54,7 +63,10 @@ class Editor extends React.Component<MyProps, MyState> {
               imageCSSHeight={this.props.imageCSSHeight}
               imageDirection={this.props.imageDirection}
             />
-            <EditArea />
+            <EditArea 
+              curStageHandler={this.curStageHandler}
+              curStage={this.state.curStage}
+            />
             <PixButtonArea />
           </div>
         </div>
