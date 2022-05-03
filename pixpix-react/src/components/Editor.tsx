@@ -18,26 +18,56 @@ type MyProps = {
 
 type MyState = {
   curStage: "size" | "shape" | "palette" | "color";
+  editedStages: {
+    size: boolean;
+    shape: boolean;
+    palette: boolean;
+    color: boolean;
+  };
 };
 
 class Editor extends React.Component<MyProps, MyState> {
-
   constructor(props: MyProps) {
     super(props);
     this.state = {
-      curStage: "size"
+      curStage: "size",
+      editedStages: {
+        size: false,
+        shape: false,
+        palette: false,
+        color: false,
+      },
     };
   }
   onUnmount = [] as (() => void)[];
 
   curStageHandler = (stage: "size" | "shape" | "palette" | "color") => {
     this.setState({
-      curStage: stage
+      curStage: stage,
+    });
+  };
+
+  editedStageHandler = (stage: "size" | "shape" | "palette" | "color") => {
+    this.setState({
+      editedStages: {
+        size: this.state.editedStages.size || stage === "size",
+        shape: this.state.editedStages.shape || stage === "shape",
+        palette: this.state.editedStages.palette || stage === "palette",
+        color: this.state.editedStages.color || stage === "color",
+      },
     });
   };
 
   componentDidMount() {
+    console.log("Editor mounted-----");
+    console.log("curStage -> ", this.state.curStage);
+    console.log("editedStages -> ", this.state.editedStages);
+  }
 
+  componentDidUpdate() {
+    console.log("Editor mounted-----");
+    console.log("curStage -> ", this.state.curStage);
+    console.log("editedStages -> ", this.state.editedStages);
   }
 
   componentWillUnmount() {
@@ -54,7 +84,7 @@ class Editor extends React.Component<MyProps, MyState> {
         </div>
         <div className="editor-area flex bg-[#eee] justify-center items-center overflow-x-auto overflow-y-auto">
           <div className="pixarea flex-[0_0_1200px] h-[900px] w-[1200px] grid grid-cols-[repeat(4,_1fr)] grid-rows-[repeat(12,_1fr)] gap-[10px]">
-            <ImageArea 
+            <ImageArea
               imageURL={this.props.imageURL}
               imageElement={this.props.imageElement}
               imagePXWidth={this.props.imagePXWidth}
@@ -63,11 +93,16 @@ class Editor extends React.Component<MyProps, MyState> {
               imageCSSHeight={this.props.imageCSSHeight}
               imageDirection={this.props.imageDirection}
             />
-            <EditArea 
-              curStageHandler={this.curStageHandler}
+            <EditArea
               curStage={this.state.curStage}
+              editedStages={this.state.editedStages}
+              curStageHandler={this.curStageHandler}
             />
-            <PixButtonArea />
+            <PixButtonArea
+              curStage={this.state.curStage}
+              curStageHandler={this.curStageHandler}
+              editedStageHandler={this.editedStageHandler}
+            />
           </div>
         </div>
       </div>

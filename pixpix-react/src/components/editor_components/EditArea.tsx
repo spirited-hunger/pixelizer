@@ -5,12 +5,12 @@ import ShapeEditor from "./edit_area_components/ShapeEditor";
 import SizeEditor from "./edit_area_components/SizeEditor";
 
 type MyProps = {
-  stages : {
-    curStage: "size" | "shape" | "palette" | "color";
-    isSizeDone: boolean;
-    isShapeDone: boolean;
-    isPaletteDone: boolean;
-    isColorDone: boolean;
+  curStage: "size" | "shape" | "palette" | "color";
+  editedStages: {
+    size: boolean;
+    shape: boolean;
+    palette: boolean;
+    color: boolean;
   };
   curStageHandler: (stage: "size" | "shape" | "palette" | "color") => void;
 };
@@ -22,27 +22,8 @@ export class EditArea extends React.Component<MyProps, {}> {
   }
 
   handleClick = (stage: "size" | "shape" | "palette" | "color") => {
-    switch (stage) {
-      case "size":
-        if (this.props.stages.isSizeDone) {
-          this.props.curStageHandler("size");
-        }
-        break;
-      case "shape":
-        if (this.props.stages.isShapeDone) {
-          this.props.curStageHandler("shape");
-        }
-        break;
-      case "palette":
-        if (this.props.stages.isPaletteDone) {
-          this.props.curStageHandler("palette");
-        }
-        break;
-      case "color":
-        if (this.props.stages.isColorDone) {
-          this.props.curStageHandler("color");
-        }
-        break;
+    if (this.props.editedStages[stage]) {
+      this.props.curStageHandler(stage);
     }
   };
 
@@ -56,7 +37,7 @@ export class EditArea extends React.Component<MyProps, {}> {
           >
             pixel size
           </div>
-          {this.props.stages.curStage === "size" ? <SizeEditor /> : null}
+          {this.props.curStage === "size" ? <SizeEditor /> : null}
         </div>
         <div className="shape-edit-area flex flex-col mb-[10px]">
           <div
@@ -65,7 +46,7 @@ export class EditArea extends React.Component<MyProps, {}> {
           >
             pixel shape
           </div>
-          {this.props.stages.curStage === "shape" ? <ShapeEditor /> : null}
+          {this.props.curStage === "shape" ? <ShapeEditor /> : null}
         </div>
         <div className="palette-edit-area flex flex-col mb-[10px]">
           <div
@@ -74,7 +55,7 @@ export class EditArea extends React.Component<MyProps, {}> {
           >
             pixel palette
           </div>
-          {this.props.stages.curStage === "palette" ? <PaletteEditor /> : null}
+          {this.props.curStage === "palette" ? <PaletteEditor /> : null}
         </div>
         <div className="color-edit-area flex flex-col">
           <div
@@ -83,7 +64,7 @@ export class EditArea extends React.Component<MyProps, {}> {
           >
             pixel color
           </div>
-          {this.props.stages.curStage === "color" ? <ColorEditor /> : null}
+          {this.props.curStage === "color" ? <ColorEditor /> : null}
         </div>
       </div>
     );
