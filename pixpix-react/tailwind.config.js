@@ -17,7 +17,7 @@ module.exports = {
         'inactive-font': '#A0A0A0',
       },
       borderWidth: {
-        'pix': '2px',
+        'pix': '3px',
         'active-line': '2px',
         'inactive-line': '1px',
       },

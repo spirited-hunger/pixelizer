@@ -6,12 +6,11 @@ import { Preview } from "./home_components/Preview";
 // TODO : 업로드시 에디터로 이동
 
 type MyProp = {
-  handleFileUpload: (fileURL: string) => void,
-  dragDropMessage: string,
+  handleFileUpload: (file: File) => void;
+  dragDropMessage: string;
 };
 
-type MyState = {
-};
+type MyState = {};
 
 export class Home extends React.Component<MyProp, MyState> {
   constructor(props: MyProp) {
@@ -27,7 +26,10 @@ export class Home extends React.Component<MyProp, MyState> {
           <Logo />
         </div>
         <div className="bg-gradient-to-b from-blue-grey to-smooth-grey flex justify-center items-center overflow-x-auto overflow-y-auto">
-          <Preview dragDropMessage={this.props.dragDropMessage} />
+          <Preview
+            dragDropMessage={this.props.dragDropMessage}
+            handleFileUpload={this.props.handleFileUpload}
+          />
         </div>
       </div>
     );
